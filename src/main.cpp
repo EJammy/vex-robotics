@@ -38,16 +38,12 @@ void opcontrol() {
 	// lvButton guiButton(screenX-20, screenY-20, 100, 100, 0, lv_color_hex(0xFFFFFF), lv_scr_act());
 	lvText textField(20, 20, lv_scr_act(), "Foo");
 
-
-	calibrateMotorAngle(lift, liftLowPos, liftHighPos);
-	// calibrateMotorAngle(claw, clawLowPos, clawHighPos, -12000);
-
 	int t = 0;
 	int liftMode = 1;
 	int delta = 0;
 	while (true) {
 		if (t % 100 == 0)
-			cout<<control.L_X()<<endl;
+			// cout<<control.L_X()<<endl;
 		t++;
 
 		// chassis.driveVoltage(control.L_Y(), control.L_X()*0.7);
@@ -120,23 +116,46 @@ void opcontrol() {
 		// 	liftMode = 0;
 		// }
 
-		if (control.UP())
-		{
-			if (t % 25 == 0)
-			{
-				liftLowPos++;
-				liftHighPos++;
-			}
-		}
+		// if (control.UP())
+		// {
+		// 	if (t % 25 == 0)
+		// 	{
+		// 		liftLowPos++;
+		// 		liftHighPos++;
+		// 	}
+		// }
+		// if (control.DOWN())
+		// {
+		// 	if (t % 25 == 0)
+		// 	{
+		// 		liftLowPos--;
+		// 		liftHighPos--;
+		// 	}
+		// }
+
 		if (control.DOWN())
 		{
-			if (t % 25 == 0)
-			{
-				liftLowPos--;
-				liftHighPos--;
-			}
+			backLift.set_value(true);
 		}
-		textField.setText(std::to_string(lift.getPosition()));
+		else if (control.UP())
+		{
+			backLift.set_value(false);
+		}
+
+		// textField.setText(std::to_string(lift.getPosition()));
+		textField.setText(
+			toStr(chassis->getOdometry()->getState().x.convert(1_in)) + " " +
+			toStr(chassis->getOdometry()->getState().y.convert(1_in)) + " " +
+			toStr(chassis->getOdometry()->getState().theta.convert(1_deg)) + "\n" +
+			toStr(control.L1()) + " " + toStr(control.L2()) + " " + toStr(control.A()) + "\n"
+			);
+		if (t % 100) {
+			cout<<
+				toStr(chassis->getOdometry()->getState().x.convert(1_in)) + " " +
+				toStr(chassis->getOdometry()->getState().y.convert(1_in)) + " " +
+				toStr(chassis->getOdometry()->getState().theta.convert(1_deg))
+			<<endl; 
+		}
 		pros::delay(4);
 	}
 }
