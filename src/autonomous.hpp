@@ -1,4 +1,6 @@
 #include "autonomous/autonR.hpp"
+#include "autonomous/auton1.hpp"
+#include "autonomous/autonTest.hpp"
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -13,13 +15,10 @@
 
 
 void autonomous() {
-    // chassis->setState({0_in, 0_in, 0_deg});
-    // for (int i = 0; i < 3; i++) {
-    //     moveTo(matSize, 0);
-    //     moveTo(matSize, matSize);
-    //     moveTo(0, matSize);
-    //     moveTo(0, 0);
-    // }
+    /* (0,0) is bottom left corner
+    * Robot pivot at center
+    */
+    chassis->setMaxVelocity(mxV1);
 
-    runAuton();
+    runAutonR();
 }

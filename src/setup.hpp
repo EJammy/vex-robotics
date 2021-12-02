@@ -21,20 +21,22 @@ okapi::MotorGroup lift({
     okapi::Motor(liftPortR, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees)
 });
 okapi::Motor claw(2, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
+okapi::Motor roller(8, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees);
 pros::Imu imu(6);
 
 std::shared_ptr<okapi::OdomChassisController> chassis;
 
 const int liftVoltage = 4000;
 const int liftVelocity = 100;
+const int rollerVelocity = 170;
 
 const int backLiftVelocity = 20;
 
-double liftLowPos = 30;
+double liftLowPos = 20;
 double liftHighPos = 750;
 
-double clawLowPos = -210;
-double clawHighPos = 0;
+double clawLowPos = 0;
+double clawHighPos = -210;
 
 // double clawLowPos = 180 ;
 // double clawHighPos = 30 ;
@@ -85,7 +87,6 @@ void initialize() {
     lift.setBrakeMode(AbstractMotor::brakeMode::hold);
     // claw.setVoltageLimit(1000);
 
-
     chassis =
         ChassisControllerBuilder()
         .withMotors(left, right)
@@ -98,14 +99,13 @@ void initialize() {
         /* specify the tracking wheels diameter (2.75 in), track (7 in), and TPR (360) */
         /* specify the middle encoder distance (1 in) and diameter (2.75 in) */
         .withOdometry({{2.75_in, 8_in}, quadEncoderTPR})
-        .withMaxVelocity(120)
         // .withGains(
         //     // {kp, ki, kd}
         //     {0.001, 0, 0},// distance controller gains
         //     {0.001, 0, 0} // turn controller gains
         //     // {0.001, 0, 0.0001}  // angle controller gains (helps drive straight)
         // )
-        // .withClosedLoopControllerTimeUtil(50, 5, 250_ms)
+        // .withClosedLoopControllerTimeUtil(50, 5, 2000_ms)
         .buildOdometry();
 
     // chassis =

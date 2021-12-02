@@ -1,6 +1,6 @@
 #include "autonSetup.hpp"
 
-void runAutonR()
+void runAutonWP()
 {
 
     /* (0,0) is bottom left corner, start from bottom right.
@@ -20,5 +20,4 @@ void runAutonR()
     moveToRev(matSize-rsHalf, 5*matSize - rsHalf);
 
     goToGoalRev(goalAlliance, false);
-    roller.moveRelative(1000, rollerVelocity);
 }

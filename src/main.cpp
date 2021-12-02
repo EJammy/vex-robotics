@@ -49,6 +49,11 @@ void opcontrol() {
 		// chassis.driveVoltage(control.L_Y(), control.L_X()*0.7);
 		left.moveVoltage((control.L_Y() + control.R_X()*0.7)*12000);
 		right.moveVoltage((control.L_Y() - control.R_X()*0.7)*12000);
+		if (control.L_Y() > 0) {
+			roller.moveVelocity(rollerVelocity);
+		} else {
+			roller.moveVoltage(0);
+		}
 
 		if (control.L1())
 		{
@@ -149,7 +154,7 @@ void opcontrol() {
 			toStr(chassis->getOdometry()->getState().theta.convert(1_deg)) + "\n" +
 			toStr(control.L1()) + " " + toStr(control.L2()) + " " + toStr(control.A()) + "\n"
 			);
-		if (t % 100) {
+		if (t % 100 == 0) {
 			cout<<
 				toStr(chassis->getOdometry()->getState().x.convert(1_in)) + " " +
 				toStr(chassis->getOdometry()->getState().y.convert(1_in)) + " " +
