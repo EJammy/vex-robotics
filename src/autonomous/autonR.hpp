@@ -1,24 +1,39 @@
 #include "autonSetup.hpp"
 
+void clearLine()
+{
+    moveToRev(1.5*matSize, 5*matSize - rsHalf);
+    clawReleaseSync();
+    moveToRev(matSize, 5*matSize - rsHalf);
+
+    goToGoalRev(goalAlliance, false, 5, 20);
+    roller.moveRelative(1000, rollerVelocity);
+    delay(2000);
+}
+
 void runAutonR()
 {
 
-    /* (0,0) is bottom left corner, start from bottom right.
+    /* (0,0) is bottom left corner
     * Robot pivot at center
     */
-    // chassis->setState({(matSize-rsHalf)*1_in, -1.5*matSize*1_in, 0_deg});
+    // start from bottom right.
+
     chassis->setState({(matSize-rsHalf)*1_in, 4.5*matSize*1_in, 0_deg});
 
     // first mobile goal
     // moveTo(2.6*matSize, -1.5*matSize);
-    goToGoal(goalR);
+    // goToGoal(goalR, true, -2, 20);
+    goToGoal(goalR, true);
     clawClampSync();
-    lift.moveAbsolute(60, liftVelocity);
+    lift.moveAbsolute(liftMidPos, liftVelocity);
+    moveToRev(3.5*matSize, 3*matSize);
+    delay(2000);
+    moveTo(1.3*matSize, 5*matSize - rsHalf);
+    // clawReleaseSync();
+    // moveToRev(matSize, 5*matSize - rsHalf);
 
-    moveToRev(matSize, 5*matSize - rsHalf);
-    clawReleaseSync();
-    moveToRev(matSize-rsHalf, 5*matSize - rsHalf);
 
-    goToGoalRev(goalAlliance, false);
-    roller.moveRelative(1000, rollerVelocity);
+    // clearLine();
+
 }

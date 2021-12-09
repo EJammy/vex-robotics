@@ -3,6 +3,8 @@
 #include "components/controller.hpp"
 #include "components/lvglWrapper.hpp"
 
+ControllerWrapper control = ControllerWrapper(pros::E_CONTROLLER_MASTER);
+
 const port_t liftPortL = 3;
 const port_t liftPortR = 4;
 
@@ -28,11 +30,12 @@ std::shared_ptr<okapi::OdomChassisController> chassis;
 
 const int liftVoltage = 4000;
 const int liftVelocity = 100;
-const int rollerVelocity = 170;
+const int rollerVelocity = 107;
 
 const int backLiftVelocity = 20;
 
-double liftLowPos = 20;
+double liftLowPos = 15;
+double liftMidPos = 50;
 double liftHighPos = 750;
 
 double clawLowPos = 0;
@@ -81,6 +84,7 @@ void calibrateMotorAngle(okapi::AbstractMotor &motor, double &lowPos, double &hi
  */
 void initialize() {
     using namespace okapi;
+    lift.tarePosition();
 
     // left.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
     // right.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);

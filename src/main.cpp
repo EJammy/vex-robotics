@@ -7,16 +7,7 @@
  */
 void disabled() {}
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
-void competition_initialize() {}
+
 
 
 /**
@@ -33,8 +24,10 @@ void competition_initialize() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+    // cout<< autonSelection << endl;
+			// competition_initialize();
+			// autonomous();
 
-	ControllerWrapper control = ControllerWrapper(pros::E_CONTROLLER_MASTER);
 	// lvButton guiButton(screenX-20, screenY-20, 100, 100, 0, lv_color_hex(0xFFFFFF), lv_scr_act());
 	lvText textField(20, 20, lv_scr_act(), "Foo");
 
@@ -42,18 +35,17 @@ void opcontrol() {
 	int liftMode = 1;
 	int delta = 0;
 	while (true) {
-		if (t % 100 == 0)
-			// cout<<control.L_X()<<endl;
+		// if (t % 100 == 0) cout<<control.L_X()<<endl;
 		t++;
 
 		// chassis.driveVoltage(control.L_Y(), control.L_X()*0.7);
 		left.moveVoltage((control.L_Y() + control.R_X()*0.7)*12000);
 		right.moveVoltage((control.L_Y() - control.R_X()*0.7)*12000);
-		if (control.L_Y() > 0) {
-			roller.moveVelocity(rollerVelocity);
-		} else {
-			roller.moveVoltage(0);
-		}
+		// if (control.L_Y() > 0) {
+		// 	roller.moveVelocity(rollerVelocity);
+		// } else {
+		// 	roller.moveVoltage(0);
+		// }
 
 		if (control.L1())
 		{
@@ -77,10 +69,6 @@ void opcontrol() {
 		// 	lift.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
 		// }
 
-		if (control.X())
-		{
-			autonomous();
-		}
 
 		if (control.R1() && lift.getPosition() < liftHighPos-5)
 		{
@@ -121,22 +109,22 @@ void opcontrol() {
 		// 	liftMode = 0;
 		// }
 
-		// if (control.UP())
-		// {
-		// 	if (t % 25 == 0)
-		// 	{
-		// 		liftLowPos++;
-		// 		liftHighPos++;
-		// 	}
-		// }
-		// if (control.DOWN())
-		// {
-		// 	if (t % 25 == 0)
-		// 	{
-		// 		liftLowPos--;
-		// 		liftHighPos--;
-		// 	}
-		// }
+		if (control.X())
+		{
+			if (t % 12 == 0)
+			{
+				liftLowPos++;
+				liftHighPos++;
+			}
+		}
+		if (control.B())
+		{
+			if (t % 12 == 0)
+			{
+				liftLowPos--;
+				liftHighPos--;
+			}
+		}
 
 		if (control.DOWN())
 		{

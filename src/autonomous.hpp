@@ -1,24 +1,63 @@
-#include "autonomous/autonR.hpp"
-#include "autonomous/auton1.hpp"
+#include "autonomous/autonL.hpp"
+#include "autonomous/autonRpush.hpp"
+#include "autonomous/autonWP.hpp"
 #include "autonomous/autonTest.hpp"
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
+#include "autonomous/skill.hpp"
 
+
+int autonSelection = -1;
+lv_res_t autonChooseFunc(lv_obj_t *btn) {
+    uint8_t id = lv_obj_get_free_num(btn);
+    autonSelection = id;
+    return LV_RES_OK;
+}
+lvButton selectR(240, 0, 240, 200, 0, LV_COLOR_ORANGE, lv_scr_act(), "R");
+lvButton selectL(0, 0, 240, 200, 1, LV_COLOR_ORANGE, lv_scr_act(), "L");
+lvButton selectWP(0, 400, 480, 80, 2, LV_COLOR_AQUA, lv_scr_act(), "WP");
+
+void competition_initialize() {
+    // 480 * 240
+    selectL.setEvent(autonChooseFunc);
+    selectR.setEvent(autonChooseFunc);
+    selectWP.setEvent(autonChooseFunc);
+    // while(autonSelection == -1) {
+    //     delay (100);
+    //     cout<< autonSelection << endl;
+    // }
+    while (!control.Y()) { delay(100); }
+    // cout<< autonSelection << endl;
+}
 
 void autonomous() {
+    selectL.hide();
+    selectR.hide();
+    selectWP.hide();
     /* (0,0) is bottom left corner
     * Robot pivot at center
     */
-    chassis->setMaxVelocity(mxV1);
 
-    runAutonR();
+    chassis->setMaxVelocity(mxV1);
+    lift.moveAbsolute(liftLowPos, liftVelocity);
+    // runAutonSkill();
+    // delay(1000);
+    // return;
+
+
+
+    if (autonSelection == 0){
+        runAutonR();
+    }else if (autonSelection == 1) {
+        runAutonL();
+    }else if (autonSelection == 2) {
+        runAutonWP();
+    }else { // -1 
+        runAutonR();
+        // runAutonWP();
+        // roller.moveVelocity(rollerVelocity);
+        // delay(5000);
+        // chassis->setState({0_in, 0_in});
+        // moveTo(10, 0, 0);
+    }
+    delay(1000);
+
 }

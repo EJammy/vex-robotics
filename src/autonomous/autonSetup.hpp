@@ -15,20 +15,24 @@ const Pos goalL = {3*matSize, 1.5*matSize};
 const Pos goalM = {3*matSize, 3*matSize};
 const Pos goalR = {3*matSize, 4.5*matSize};
 const Pos goalAlliance = {1.5*matSize, 5.5*matSize};
+const Pos goalAlliance2 = { matSize / 2, matSize * 1.75};
 
-const double mxV1 = 140;
-const double mxV2 = 40;
+const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
+const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
+
+const double mxV1 = 150;
+const double mxV2 = 50;
 
 void clawClampSync()
 {
     clawClamp();
-    delay(500);
+    delay(200);
 }
 
 void clawReleaseSync()
 {
     clawRelease();
-    delay(500);
+    delay(200);
 }
 
 // void moveTo(double x, double y)
@@ -36,7 +40,7 @@ void clawReleaseSync()
 //     chassis->driveToPoint({x*1_in, y*1_in});
 // }
 
-void autonWait(double ms, double err) {
+void autonWait(double err, double ms = 2) {
     // while (!chassis->isSettled()) {
     //     delay(200);
     //     cout<<left.getPosition()<<' '<<right.getPosition()<<'\n';
@@ -48,8 +52,8 @@ void autonWait(double ms, double err) {
 
     int t = 0;
     int x = 0;
-    while (t < ms) {
-        if (x % 20 == 0) {
+    while (t < ms && x < 25 && !chassis->isSettled()) {
+        if (x % 10 == 0) {
             cout<<left.getPosition()<<' '<<right.getPosition()<<'\n';
             cout<<left.getTargetPosition()<<' '<<right.getTargetPosition()<<'\n';
             cout<<left.getPositionError()<<' '<<right.getPositionError()<<endl;
@@ -62,14 +66,20 @@ void autonWait(double ms, double err) {
         } else {
             t = 0;
         }
-        delay(80);
+        delay(100);
     }
 }
 
-void wait1() { autonWait(2, 30); }
-void wait2() { autonWait(1, 200); }
+void wait1() { autonWait(20); }
+void wait2() { autonWait(400); }
 
-void moveToRev(double x, double y, double delta = 0.0, bool wait = true) // x-axis is vertical axis
+void rotateTo(double deg)
+{
+    chassis->turnAngleAsync(deg*1_deg - chassis->getOdometry()->getState().theta);
+    autonWait(50, 5);
+}
+
+void moveToRev(double x, double y, double delta = 0.0, bool wait = true, double velocity = -1) // x-axis is vertical axis
 {
     dist_t xdist = x*1_in;
     dist_t ydist = y*1_in;
@@ -80,21 +90,17 @@ void moveToRev(double x, double y, double delta = 0.0, bool wait = true) // x-ax
     {
         auto theta = okapi::atan((xdist / ydist));
         if (ydist < 0_in) theta += 180_deg;
-        chassis->turnToAngle(90_deg - theta); // math checks out
+        rotateTo(90 - theta.convert(1_deg)); // math checks out
     }
+    if (velocity != -1) chassis->setMaxVelocity(velocity);
     chassis->moveDistanceAsync(-okapi::sqrt(xdist*xdist + ydist*ydist) + delta*1_in);
     if (wait) {
         wait1();
     }
 }
 
-void rotateTo(double deg)
-{
-    chassis->turnAngle(deg*1_deg);
-}
 
-
-void moveTo(double x, double y, double delta = 0.0, bool wait = true)
+void moveTo(double x, double y, double delta = 0.0, bool wait = true, double velocity = -1)
 {
     dist_t xdist = x*1_in;
     dist_t ydist = y*1_in;
@@ -105,16 +111,15 @@ void moveTo(double x, double y, double delta = 0.0, bool wait = true)
     {
         auto theta = okapi::atan((xdist / ydist));
         if (ydist > 0_in) theta += 180_deg;
-        chassis->turnToAngle(90_deg - theta); // math checks out
+        rotateTo(90 - theta.convert(1_deg)); // math checks out
     }
+    if (velocity != -1) chassis->setMaxVelocity(velocity);
     chassis->moveDistanceAsync(okapi::sqrt(xdist*xdist + ydist*ydist) - delta*1_in);
     if (wait) wait1();
 }
 
-const double goalDelta1 = 20;
-const double goalDelta2 = 10;
 
-void goToGoal(Pos p, bool twoStep = true)
+void goToGoal(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelta1 = 18)
 {
     double x = p.first;
     double y = p.second;
@@ -129,7 +134,7 @@ void goToGoal(Pos p, bool twoStep = true)
     chassis->setMaxVelocity(mxV1);
 }
 
-void goToGoalRev(Pos p, bool twoStep = true)
+void goToGoalRev(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelta1 = 18)
 {
     double x = p.first;
     double y = p.second;
@@ -137,8 +142,7 @@ void goToGoalRev(Pos p, bool twoStep = true)
         moveToRev(x, y, goalDelta1, false);
         wait2();
     }
-    chassis->setMaxVelocity(mxV2);
-    moveToRev(x, y, goalDelta2, false);
+    moveToRev(x, y, goalDelta2, false, mxV2);
     wait1();
 
     chassis->setMaxVelocity(mxV1);

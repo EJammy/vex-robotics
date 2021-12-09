@@ -25,6 +25,9 @@ class lvObj
 		void hide(){
 			lv_obj_set_hidden(obj, true);
 		}
+		~lvObj(){
+			delete obj;
+		}
 };
 
 class lvButton : lvObj{
@@ -60,9 +63,6 @@ class lvButton : lvObj{
 		}
 		void hide(){
 			lv_obj_set_hidden(obj, true);
-		}
-		~lvButton(){
-			delete obj;
 		}
 };
 
