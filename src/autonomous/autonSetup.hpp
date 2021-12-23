@@ -61,9 +61,10 @@ void moveTo(double x, double y, double delta = 0.0, bool wait = true, double vel
     {
         auto theta = okapi::atan((xdist / ydist));
         if (ydist > 0_in) theta += 180_deg;
-        rotateTo(90 - theta.convert(1_deg)); // math checks out
+        if (abs(theta) > 2_deg)
+            rotateTo(90 - theta.convert(1_deg)); // math checks out
     }
-    moveFwd((okapi::sqrt(xdist*xdist + ydist*ydist) + delta*1_in).convert(1_in), velocity);
+    moveFwd((okapi::sqrt(xdist*xdist + ydist*ydist) - delta*1_in).convert(1_in), velocity);
 }
 
 
@@ -87,17 +88,11 @@ void moveTo(double x, double y, double delta = 0.0, bool wait = true, double vel
 //     }
 // }
 
-void goToGoal(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelta1 = 18)
+void goToGoal(Pos p, double goalDelta = 8)
 {
     double x = p.first;
     double y = p.second;
-    if (twoStep) {
-        moveTo(x, y, goalDelta1, false);
-    }
-    chassis->setMaxVelocity(mxV2);
-    moveTo(x, y, goalDelta2, false);
-
-    chassis->setMaxVelocity(mxV1);
+    moveTo(x, y, goalDelta, false);
 }
 
 // void goToGoalRev(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelta1 = 18)

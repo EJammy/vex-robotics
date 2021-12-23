@@ -18,13 +18,13 @@ void runAutonR()
     clawClampSync();
     lift.moveAbsolute(liftMidPos, liftVelocity);
 
-    // moveToRev(3.5*matSize, 3*matSize);
-    // delay(2000);
-    // moveTo(1.3*matSize, 5*matSize - rsHalf);
-    // clawReleaseSync();
-    // moveToRev(matSize, 5*matSize - rsHalf);
+    moveToRev(3.5*matSize, 3*matSize);
+    delay(2000);
+    moveTo(1.3*matSize, 5*matSize - rsHalf);
+    clawReleaseSync();
+    moveToRev(matSize, 5*matSize - rsHalf);
 
 
-    // clearLine();
+    clearLine();
 
 }

@@ -3,5 +3,10 @@
 void autonTest()
 {
     chassis->setState({0_in, 0_in, 0_deg});
-    moveFwd(2*matSize, 200);
+    moveTo(matSize*2, 0);
+    moveTo(matSize*2, 0);
+    moveTo(matSize*2, 0);
+    moveTo(matSize*2, 0);
+
+    delay(1000);
 }
