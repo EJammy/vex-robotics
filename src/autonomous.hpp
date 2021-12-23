@@ -1,9 +1,8 @@
-#include "autonomous/autonL.hpp"
+// #include "autonomous/autonL.hpp"
 #include "autonomous/autonRpush.hpp"
-#include "autonomous/autonWP.hpp"
+// #include "autonomous/autonWP.hpp"
 #include "autonomous/autonTest.hpp"
-#include "autonomous/skill.hpp"
-
+// #include "autonomous/skill.hpp"
 
 int autonSelection = -1;
 lv_res_t autonChooseFunc(lv_obj_t *btn) {
@@ -35,29 +34,30 @@ void autonomous() {
     /* (0,0) is bottom left corner
     * Robot pivot at center
     */
-
     chassis->setMaxVelocity(mxV1);
     lift.moveAbsolute(liftLowPos, liftVelocity);
     // runAutonSkill();
     // delay(1000);
     // return;
 
+    autonTest();
+    runAutonR();
+    return;
 
-
-    if (autonSelection == 0){
-        runAutonR();
-    }else if (autonSelection == 1) {
-        runAutonL();
-    }else if (autonSelection == 2) {
-        runAutonWP();
-    }else { // -1 
-        runAutonR();
-        // runAutonWP();
-        // roller.moveVelocity(rollerVelocity);
-        // delay(5000);
-        // chassis->setState({0_in, 0_in});
-        // moveTo(10, 0, 0);
-    }
+    // if (autonSelection == 0){
+    //     runAutonR();
+    // }else if (autonSelection == 1) {
+    //     runAutonL();
+    // }else if (autonSelection == 2) {
+    //     runAutonWP();
+    // }else { // -1 
+    //     runAutonR();
+    //     // runAutonWP();
+    //     // roller.moveVelocity(rollerVelocity);
+    //     // delay(5000);
+    //     // chassis->setState({0_in, 0_in});
+    //     // moveTo(10, 0, 0);
+    // }
     delay(1000);
 
 }

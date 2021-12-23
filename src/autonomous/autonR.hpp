@@ -1,15 +1,5 @@
 #include "autonSetup.hpp"
 
-void clearLine()
-{
-    moveToRev(1.5*matSize, 5*matSize - rsHalf);
-    clawReleaseSync();
-    moveToRev(matSize, 5*matSize - rsHalf);
-
-    goToGoalRev(goalAlliance, false, 5, 20);
-    roller.moveRelative(1000, rollerVelocity);
-    delay(2000);
-}
 
 void runAutonR()
 {
@@ -27,9 +17,10 @@ void runAutonR()
     goToGoal(goalR, true);
     clawClampSync();
     lift.moveAbsolute(liftMidPos, liftVelocity);
-    moveToRev(3.5*matSize, 3*matSize);
-    delay(2000);
-    moveTo(1.3*matSize, 5*matSize - rsHalf);
+
+    // moveToRev(3.5*matSize, 3*matSize);
+    // delay(2000);
+    // moveTo(1.3*matSize, 5*matSize - rsHalf);
     // clawReleaseSync();
     // moveToRev(matSize, 5*matSize - rsHalf);
 

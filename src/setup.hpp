@@ -1,5 +1,4 @@
 #include "main.h"
-#include "components/chassis.hpp"
 #include "components/controller.hpp"
 #include "components/lvglWrapper.hpp"
 
@@ -89,6 +88,8 @@ void initialize() {
     // left.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
     // right.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
     lift.setBrakeMode(AbstractMotor::brakeMode::hold);
+    // left.setBrakeMode(AbstractMotor::brakeMode::brake);
+    // right.setBrakeMode(AbstractMotor::brakeMode::brake);
     // claw.setVoltageLimit(1000);
 
     chassis =

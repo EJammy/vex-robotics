@@ -14,8 +14,8 @@ using Pos = std::pair<double, double>;
 const Pos goalL = {3*matSize, 1.5*matSize};
 const Pos goalM = {3*matSize, 3*matSize};
 const Pos goalR = {3*matSize, 4.5*matSize};
-const Pos goalAlliance = {1.5*matSize, 5.5*matSize};
-const Pos goalAlliance2 = { matSize / 2, matSize * 1.75};
+const Pos goalAlliance = {1.5*matSize, 5.5*matSize}; // the goal on awp
+const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platform
 
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
 const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
@@ -35,72 +35,22 @@ void clawReleaseSync()
     delay(200);
 }
 
-// void moveTo(double x, double y)
-// {
-//     chassis->driveToPoint({x*1_in, y*1_in});
-// }
-
-void autonWait(double err, double ms = 2) {
-    // while (!chassis->isSettled()) {
-    //     delay(200);
-    //     cout<<left.getPosition()<<' '<<right.getPosition()<<'\n';
-    //     cout<<left.getTargetPosition()<<' '<<right.getTargetPosition()<<'\n';
-    //     cout<<left.getPositionError()<<' '<<right.getPositionError()<<endl;
-    //     cout<<"==="<<endl;
-    // }
-    // return;
-
-    int t = 0;
-    int x = 0;
-    while (t < ms && x < 25 && !chassis->isSettled()) {
-        if (x % 10 == 0) {
-            cout<<left.getPosition()<<' '<<right.getPosition()<<'\n';
-            cout<<left.getTargetPosition()<<' '<<right.getTargetPosition()<<'\n';
-            cout<<left.getPositionError()<<' '<<right.getPositionError()<<endl;
-            cout<<abs(left.getPositionError()) + abs(right.getPositionError())<<endl;
-            cout<<"==="<<endl;
-        }
-        x++;
-        if  (abs(left.getPositionError()) <= err || abs(right.getPositionError()) <= err) {
-            t++;
-        } else {
-            t = 0;
-        }
-        delay(100);
-    }
+const double circumfrence = 4*PI;
+void moveFwd(double dist, double velocity = 100) {
+    double vInches = velocity/60.0*circumfrence; // velocity in inches
+    int t = dist/vInches*1000;
+    left.moveVelocity(velocity);
+    right.moveVelocity(velocity);
+    delay(t*chassisGearRatio);
+    left.moveVelocity(0);
+    right.moveVelocity(0);
 }
 
-void wait1() { autonWait(20); }
-void wait2() { autonWait(400); }
-
-void rotateTo(double deg)
-{
-    chassis->turnAngleAsync(deg*1_deg - chassis->getOdometry()->getState().theta);
-    autonWait(50, 5);
+void rotateTo(double d) {
+    chassis->turnToAngle(d*1_deg);
 }
 
-void moveToRev(double x, double y, double delta = 0.0, bool wait = true, double velocity = -1) // x-axis is vertical axis
-{
-    dist_t xdist = x*1_in;
-    dist_t ydist = y*1_in;
-    xdist = chassis->getOdometry()->getState().x - xdist;
-    ydist = chassis->getOdometry()->getState().y - ydist;
-
-    if (ydist != 0_m)
-    {
-        auto theta = okapi::atan((xdist / ydist));
-        if (ydist < 0_in) theta += 180_deg;
-        rotateTo(90 - theta.convert(1_deg)); // math checks out
-    }
-    if (velocity != -1) chassis->setMaxVelocity(velocity);
-    chassis->moveDistanceAsync(-okapi::sqrt(xdist*xdist + ydist*ydist) + delta*1_in);
-    if (wait) {
-        wait1();
-    }
-}
-
-
-void moveTo(double x, double y, double delta = 0.0, bool wait = true, double velocity = -1)
+void moveTo(double x, double y, double delta = 0.0, bool wait = true, double velocity = 100)
 {
     dist_t xdist = x*1_in;
     dist_t ydist = y*1_in;
@@ -113,11 +63,29 @@ void moveTo(double x, double y, double delta = 0.0, bool wait = true, double vel
         if (ydist > 0_in) theta += 180_deg;
         rotateTo(90 - theta.convert(1_deg)); // math checks out
     }
-    if (velocity != -1) chassis->setMaxVelocity(velocity);
-    chassis->moveDistanceAsync(okapi::sqrt(xdist*xdist + ydist*ydist) - delta*1_in);
-    if (wait) wait1();
+    moveFwd((okapi::sqrt(xdist*xdist + ydist*ydist) + delta*1_in).convert(1_in), velocity);
 }
 
+
+// void moveToRev(double x, double y, double delta = 0.0, bool wait = true, double velocity = -1) // x-axis is vertical axis
+// {
+//     dist_t xdist = x*1_in;
+//     dist_t ydist = y*1_in;
+//     xdist = chassis->getOdometry()->getState().x - xdist;
+//     ydist = chassis->getOdometry()->getState().y - ydist;
+
+//     if (ydist != 0_m)
+//     {
+//         auto theta = okapi::atan((xdist / ydist));
+//         if (ydist < 0_in) theta += 180_deg;
+//         rotateTo(90 - theta.convert(1_deg)); // math checks out
+//     }
+//     if (velocity != -1) chassis->setMaxVelocity(velocity);
+//     chassis->moveDistanceAsync(-okapi::sqrt(xdist*xdist + ydist*ydist) + delta*1_in);
+//     if (wait) {
+//         wait1();
+//     }
+// }
 
 void goToGoal(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelta1 = 18)
 {
@@ -125,38 +93,25 @@ void goToGoal(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelt
     double y = p.second;
     if (twoStep) {
         moveTo(x, y, goalDelta1, false);
-        wait2();
     }
     chassis->setMaxVelocity(mxV2);
     moveTo(x, y, goalDelta2, false);
-    wait1();
 
     chassis->setMaxVelocity(mxV1);
 }
 
-void goToGoalRev(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelta1 = 18)
-{
-    double x = p.first;
-    double y = p.second;
-    if (twoStep) {
-        moveToRev(x, y, goalDelta1, false);
-        wait2();
-    }
-    moveToRev(x, y, goalDelta2, false, mxV2);
-    wait1();
-
-    chassis->setMaxVelocity(mxV1);
-}
-
-// void moveForward(double x)
+// void goToGoalRev(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelta1 = 18)
 // {
-// 	PID pid = PID(0.016, 0.00045, 0.1, 9, 0.15);
-//     int t = 0;
-//     pid.setTarget(x);
-//     while (t < 8)
-//     {
-//         pid.update()
+//     double x = p.first;
+//     double y = p.second;
+//     if (twoStep) {
+//         moveToRev(x, y, goalDelta1, false);
+//         wait2();
 //     }
+//     moveToRev(x, y, goalDelta2, false, mxV2);
+//     wait1();
+
+//     chassis->setMaxVelocity(mxV1);
 // }
 
 // void turn(double angle, double diff = 0.22) {
@@ -184,6 +139,16 @@ void goToGoalRev(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalD
 //     pros::delay(20);
 // }
 
+// void clearLine()
+// {
+//     moveToRev(1.5*matSize, 5*matSize - rsHalf);
+//     clawReleaseSync();
+//     moveToRev(matSize, 5*matSize - rsHalf);
+
+//     goToGoalRev(goalAlliance, false, 5, 20);
+//     roller.moveRelative(1000, rollerVelocity);
+//     delay(2000);
+// }
 #endif
 
 /**

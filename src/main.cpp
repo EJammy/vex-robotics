@@ -46,6 +46,9 @@ void opcontrol() {
 		// } else {
 		// 	roller.moveVoltage(0);
 		// }
+		if (control.Y()) {
+			autonomous();
+		}
 
 		if (control.L1())
 		{
