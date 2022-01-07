@@ -65,50 +65,50 @@ void opcontrol() {
 		if (control.LEFT())
 		{
 			liftLowPos = -INFINITY;
-			lift.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+			lift1.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
 		}
 		// if (control.B())
 		// {
-		// 	lift.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
+		// 	lift1.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
 		// }
 
 
-		if (control.R1() && lift.getPosition() < liftHighPos-5)
+		if (control.R1() && lift1.getPosition() < liftHighPos-5)
 		{
-			lift.moveVelocity(liftVelocity);
+			lift1.moveVelocity(liftVelocity);
 			liftMode = 1;
 		}
-		else if (control.R2() && lift.getPosition() > liftLowPos+5)
+		else if (control.R2() && lift1.getPosition() > liftLowPos+5)
 		{
-			lift.moveVelocity(-liftVelocity);
+			lift1.moveVelocity(-liftVelocity);
 			liftMode = 1;
 		}
 		else if (liftMode == 1)
 		{
-			if (lift.getPosition() > liftHighPos)
-				lift.moveAbsolute(liftHighPos, liftVelocity);
-			else if (lift.getPosition() < liftLowPos)
-				lift.moveAbsolute(liftLowPos, liftVelocity);
+			if (lift1.getPosition() > liftHighPos)
+				lift1.moveAbsolute(liftHighPos, liftVelocity);
+			else if (lift1.getPosition() < liftLowPos)
+				lift1.moveAbsolute(liftLowPos, liftVelocity);
 			else
-				lift.moveVelocity(0);
+				lift1.moveVelocity(0);
 		}
-		// if (lift.getPosition() < liftLowPos)
+		// if (lift1.getPosition() < liftLowPos)
 		// {
-		// 	lift.moveAbsolute(liftLowPos, liftVelocity);
+		// 	lift1.moveAbsolute(liftLowPos, liftVelocity);
 		// }
-		// if (lift.getPosition() > liftHighPos)
+		// if (lift1.getPosition() > liftHighPos)
 		// {
-		// 	lift.moveAbsolute(liftHighPos, liftVelocity);
+		// 	lift1.moveAbsolute(liftHighPos, liftVelocity);
 		// }
 
 		// if (control.L1())
 		// {
-		// 	lift.moveAbsolute(liftHighPos, liftVelocity);
+		// 	lift1.moveAbsolute(liftHighPos, liftVelocity);
 		// 	liftMode = 0;
 		// }
 		// else if (control.L2())
 		// {
-		// 	lift.moveAbsolute(liftLowPos, liftVelocity);
+		// 	lift1.moveAbsolute(liftLowPos, liftVelocity);
 		// 	liftMode = 0;
 		// }
 
@@ -131,14 +131,14 @@ void opcontrol() {
 
 		if (control.DOWN())
 		{
-			backLift.set_value(true);
+			clamp1.set_value(true);
 		}
 		else if (control.UP())
 		{
-			backLift.set_value(false);
+			clamp1.set_value(false);
 		}
 
-		// textField.setText(std::to_string(lift.getPosition()));
+		// textField.setText(std::to_string(lift1.getPosition()));
 		textField.setText(
 			toStr(chassis->getOdometry()->getState().x.convert(1_in)) + " " +
 			toStr(chassis->getOdometry()->getState().y.convert(1_in)) + " " +

@@ -7,7 +7,8 @@ ControllerWrapper control = ControllerWrapper(pros::E_CONTROLLER_MASTER);
 const port_t liftPortL = 3;
 const port_t liftPortR = 4;
 
-pros::ADIDigitalOut backLift('E');
+pros::ADIDigitalOut clamp1('E');
+pros::ADIDigitalOut clamp2('F');
 okapi::MotorGroup left({
     okapi::Motor(10, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
     okapi::Motor(20, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
@@ -17,10 +18,18 @@ okapi::MotorGroup right({
     okapi::Motor(11, false, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
 });
 
-okapi::MotorGroup lift({
-    okapi::Motor(liftPortL, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    okapi::Motor(liftPortR, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees)
-});
+/* front lift */
+okapi::Motor lift1 = 
+    okapi::Motor(liftPortL, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
+
+/* back high lift */
+okapi::Motor lift2 = 
+    okapi::Motor(liftPortL, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
+
+/* back low lift */
+okapi::Motor lift3 = 
+    okapi::Motor(liftPortL, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
+
 okapi::Motor claw(2, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
 okapi::Motor roller(8, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees);
 pros::Imu imu(6);
@@ -83,11 +92,11 @@ void calibrateMotorAngle(okapi::AbstractMotor &motor, double &lowPos, double &hi
  */
 void initialize() {
     using namespace okapi;
-    lift.tarePosition();
+    lift1.tarePosition();
 
     // left.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
     // right.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
-    lift.setBrakeMode(AbstractMotor::brakeMode::hold);
+    lift1.setBrakeMode(AbstractMotor::brakeMode::hold);
     // left.setBrakeMode(AbstractMotor::brakeMode::brake);
     // right.setBrakeMode(AbstractMotor::brakeMode::brake);
     // claw.setVoltageLimit(1000);
