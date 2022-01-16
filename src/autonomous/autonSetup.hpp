@@ -20,53 +20,73 @@ const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platf
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
 const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
 
-const double mxV1 = 150;
+const double mxV1 = 200;
 const double mxV2 = 50;
-
-void clawClampSync()
-{
-    clawClamp();
-    delay(200);
-}
-
-void clawReleaseSync()
-{
-    clawRelease();
-    delay(200);
-}
-
 const double circumfrence = 4*PI;
-void moveFwd(double dist, double velocity = 100) {
+const int move_t_extra = 10;
+const int autonVelocity = 10;
+
+void moveFwd(double dist, double velocity = mxV1) {
     double vInches = velocity/60.0*circumfrence; // velocity in inches
     int t = dist/vInches*1000;
     left.moveVelocity(velocity);
     right.moveVelocity(velocity);
-    delay(t*chassisGearRatio);
+    delay(t*chassisGearRatio + move_t_extra);
     left.moveVelocity(0);
     right.moveVelocity(0);
+    delay(300);
+}
+
+void moveRev(double dist, double velocity = mxV1) {
+    moveFwd(dist, -velocity);
 }
 
 void rotateTo(double d) {
     chassis->turnToAngle(d*1_deg);
 }
 
-void moveTo(double x, double y, double delta = 0.0, bool wait = true, double velocity = 100)
+const double minDistEpsilon = 3;
+void moveTo(double x, double y, double delta = 0.0, bool wait = true, double velocity = mxV1)
 {
     dist_t xdist = x*1_in;
     dist_t ydist = y*1_in;
     xdist = chassis->getOdometry()->getState().x - xdist;
     ydist = chassis->getOdometry()->getState().y - ydist;
+    if ((xdist * xdist + ydist * ydist).convert(1_in*1_in) < minDistEpsilon * minDistEpsilon)
+        return;
 
     if (ydist != 0_m)
     {
         auto theta = okapi::atan((xdist / ydist));
         if (ydist > 0_in) theta += 180_deg;
+        cout<<90-theta.convert(1_deg)<<endl;
+        theta = 90_deg - theta;
         if (abs(theta) > 2_deg)
-            rotateTo(90 - theta.convert(1_deg)); // math checks out
+            rotateTo(theta.convert(1_deg)); // math checks out
     }
     moveFwd((okapi::sqrt(xdist*xdist + ydist*ydist) - delta*1_in).convert(1_in), velocity);
 }
 
+void moveToRev(double x, double y, double delta = 0.0, bool wait = true, double velocity = mxV1)
+{
+    dist_t xdist = x*1_in;
+    dist_t ydist = y*1_in;
+    xdist = chassis->getOdometry()->getState().x - xdist;
+    ydist = chassis->getOdometry()->getState().y - ydist;
+    if ((xdist * xdist + ydist * ydist).convert(1_in*1_in) < minDistEpsilon * minDistEpsilon)
+        return;
+
+    if (ydist != 0_m)
+    {
+        auto theta = okapi::atan((xdist / ydist));
+        if (ydist < 0_in) theta += 180_deg;
+        cout<<90-theta.convert(1_deg)<<endl;
+        theta = 90_deg - theta;
+        if (abs(theta) > 2_deg)
+            rotateTo(theta.convert(1_deg)); // math checks out
+    }
+    moveRev((-okapi::sqrt(xdist*xdist + ydist*ydist) + delta*1_in).convert(1_in), velocity);
+}
 
 // void moveToRev(double x, double y, double delta = 0.0, bool wait = true, double velocity = -1) // x-axis is vertical axis
 // {
@@ -94,7 +114,12 @@ void goToGoal(Pos p, double goalDelta = 8)
     double y = p.second;
     moveTo(x, y, goalDelta, false);
 }
-
+void goToGoalRev(Pos p, double goalDelta = 8)
+{
+    double x = p.first;
+    double y = p.second;
+    moveToRev(x, y, goalDelta, false);
+}
 // void goToGoalRev(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelta1 = 18)
 // {
 //     double x = p.first;

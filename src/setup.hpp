@@ -1,44 +1,49 @@
 #include "main.h"
 #include "components/controller.hpp"
 #include "components/lvglWrapper.hpp"
+#include "lift.hpp"
+#include "clamp.hpp"
+
 
 ControllerWrapper control = ControllerWrapper(pros::E_CONTROLLER_MASTER);
 
-const port_t liftPortL = 3;
-const port_t liftPortR = 4;
-
-pros::ADIDigitalOut clamp1('E');
-pros::ADIDigitalOut clamp2('F');
-okapi::MotorGroup left({
-    okapi::Motor(10, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
-    okapi::Motor(20, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
-});
+Clamp clamp1('A');
+Clamp clamp2('B');
 okapi::MotorGroup right({
-    okapi::Motor(1, false, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
-    okapi::Motor(11, false, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
+    okapi::Motor(1, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
+    okapi::Motor(10, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
+});
+okapi::MotorGroup left({
+    okapi::Motor(2, false, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
+    okapi::Motor(9, false, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
 });
 
 /* front lift */
-okapi::Motor lift1 = 
-    okapi::Motor(liftPortL, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
+Lift lift1(
+    okapi::Motor(3, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
+    80,
+    990
+);
 
-/* back high lift */
-okapi::Motor lift2 = 
-    okapi::Motor(liftPortL, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
-
+Lift lift2(
+    okapi::Motor(4, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
+    80,
+    960
+);
 /* back low lift */
-okapi::Motor lift3 = 
-    okapi::Motor(liftPortL, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
+LiftV2 lift3(
+    okapi::Motor(5, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
+    {-500,-300, 0}
+);
 
-okapi::Motor claw(2, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
-okapi::Motor roller(8, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees);
+okapi::Motor roller(7, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees);
 pros::Imu imu(6);
 
 std::shared_ptr<okapi::OdomChassisController> chassis;
 
 const int liftVoltage = 4000;
 const int liftVelocity = 100;
-const int rollerVelocity = 107;
+const int rollerVelocity = 95;
 
 const int backLiftVelocity = 20;
 
@@ -52,21 +57,12 @@ double clawHighPos = -210;
 // double clawLowPos = 180 ;
 // double clawHighPos = 30 ;
 
-const double chassisGearRatio = 60.0/84.0;
+// const double chassisGearRatio = 60.0/84.0;
+const double chassisGearRatio = 1;
 // const double chassisGearRatio = 84.0/60.0;
 
 // const double liftDelta = 610 - 15;
 // const double liftHighPos = 410;
-
-void clawClamp()
-{
-    claw.moveAbsolute(clawHighPos, 80);
-}
-
-void clawRelease()
-{
-    claw.moveAbsolute(clawLowPos, 80);
-}
 
 void calibrateMotorAngle(okapi::AbstractMotor &motor, double &lowPos, double &highPos, int voltage = -2500)
 {
@@ -92,68 +88,26 @@ void calibrateMotorAngle(okapi::AbstractMotor &motor, double &lowPos, double &hi
  */
 void initialize() {
     using namespace okapi;
-    lift1.tarePosition();
 
     // left.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
     // right.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
-    lift1.setBrakeMode(AbstractMotor::brakeMode::hold);
-    // left.setBrakeMode(AbstractMotor::brakeMode::brake);
-    // right.setBrakeMode(AbstractMotor::brakeMode::brake);
+    left.setBrakeMode(AbstractMotor::brakeMode::brake);
+    right.setBrakeMode(AbstractMotor::brakeMode::brake);
     // claw.setVoltageLimit(1000);
 
     chassis =
         ChassisControllerBuilder()
         .withMotors(left, right)
         /* set gearset, wheel diam and wheel track */
-        .withDimensions(AbstractMotor::gearset::green, {{4_in, 34.5_cm}, imev5GreenTPR * chassisGearRatio})
-        .withSensors(
-            ADIEncoder{'G','H', true}, // left encoder
-            ADIEncoder{'A','B', true} // right encoder
-        )
+        .withDimensions(AbstractMotor::gearset::green, {{4_in, 15_in}, imev5GreenTPR * chassisGearRatio})
         /* specify the tracking wheels diameter (2.75 in), track (7 in), and TPR (360) */
-        /* specify the middle encoder distance (1 in) and diameter (2.75 in) */
-        .withOdometry({{2.75_in, 8_in}, quadEncoderTPR})
-        // .withGains(
-        //     // {kp, ki, kd}
-        //     {0.001, 0, 0},// distance controller gains
-        //     {0.001, 0, 0} // turn controller gains
-        //     // {0.001, 0, 0.0001}  // angle controller gains (helps drive straight)
-        // )
+        .withOdometry()
+        .withGains(
+            // {kp, ki, kd}
+            {0.001, 0, 0},// distance controller gains
+            {0.002, 0, 0} // turn controller gains
+            // {0.001, 0, 0.0001}  // angle controller gains (helps drive straight)
+        )
         // .withClosedLoopControllerTimeUtil(50, 5, 2000_ms)
         .buildOdometry();
-
-    // chassis =
-    //     ChassisControllerBuilder()
-    //     .withMotors(left, right)
-    //     /* set gearset, wheel diam and wheel track */
-    //     .withDimensions(AbstractMotor::gearset::green, {{4_in, 34.9_cm}, imev5GreenTPR * chassisGearRatio})
-    //     .withOdometry()
-    //     .withMaxVelocity(80)
-    //     // .withGains(
-    //     //     // {kp, ki, kd}
-    //     //     {0.005, 0, 0},// distance controller gains
-    //     //     {0.005, 0, 0}, // turn controller gains
-    //     //     {0, 0, 0}  // angle controller gains (helps drive straight)
-    //     // )
-    //     // .withClosedLoopControllerTimeUtil(50, 5, 250_ms)
-    //     .buildOdometry();
-
-    // left.setReversed(false);
-    // right.setReversed(true);
-    // chassis =
-    //     ChassisControllerBuilder()
-    //     .withMotors(left, right)
-    //     /* set gearset, wheel diam and wheel track */
-    //     .withDimensions(AbstractMotor::gearset::green, {{4_in, 14_in}, imev5GreenTPR})
-    //     /* specify the tracking wheels diameter (2.75 in), track (7 in), and TPR (360) */
-    //     /* specify the middle encoder distance (1 in) and diameter (2.75 in) */
-    //     .withSensors(
-    //         ADIEncoder{'G','H'}, // left encoder
-    //         ADIEncoder('A', 'B', true), // right encoder
-    //         ADIEncoder{'C','D'}  // mid encoder
-    //     )
-    //     .withOdometry({{2.75_in, 7_in, 1_in, 2.75_in}, quadEncoderTPR})
-    //     // .withOdometry()
-    //     .withMaxVelocity(60)
-    //     .buildOdometry();
 }

@@ -38,105 +38,47 @@ void opcontrol() {
 		// if (t % 100 == 0) cout<<control.L_X()<<endl;
 		t++;
 
-		// chassis.driveVoltage(control.L_Y(), control.L_X()*0.7);
+		// chassis->getModel()->arcade(control.L_Y(), control.L_X()*0.7);
+		if (control.B()) {
+			roller.moveVelocity(-rollerVelocity);
+		} else if (control.L_Y() < 0 || control.X()) {
+			roller.moveVelocity(rollerVelocity);
+		} else {
+			roller.moveVoltage(0);
+		}
+
 		left.moveVoltage((control.L_Y() + control.R_X()*0.7)*12000);
 		right.moveVoltage((control.L_Y() - control.R_X()*0.7)*12000);
-		// if (control.L_Y() > 0) {
-		// 	roller.moveVelocity(rollerVelocity);
-		// } else {
-		// 	roller.moveVoltage(0);
-		// }
+
 		if (control.Y()) {
 			autonomous();
 		}
 
-		if (control.L1())
-		{
-			clawClamp();
+		lift1.drive(control.R1(), control.R2());
+		lift2.drive(control.L1(), control.L2());
+		// lift3.drive(control.UP(), control.DOWN());
+		if (control.get_digital_new_press(DIGITAL_UP)) {
+			lift3++;
 		}
-		else if (control.L2())
-		{
-			clawRelease();
-		}
-		else if (control.A())
-		{
-			claw.moveVoltage(6000);
-		}
-		if (control.LEFT())
-		{
-			liftLowPos = -INFINITY;
-			lift1.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
-		}
-		// if (control.B())
-		// {
-		// 	lift1.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
-		// }
-
-
-		if (control.R1() && lift1.getPosition() < liftHighPos-5)
-		{
-			lift1.moveVelocity(liftVelocity);
-			liftMode = 1;
-		}
-		else if (control.R2() && lift1.getPosition() > liftLowPos+5)
-		{
-			lift1.moveVelocity(-liftVelocity);
-			liftMode = 1;
-		}
-		else if (liftMode == 1)
-		{
-			if (lift1.getPosition() > liftHighPos)
-				lift1.moveAbsolute(liftHighPos, liftVelocity);
-			else if (lift1.getPosition() < liftLowPos)
-				lift1.moveAbsolute(liftLowPos, liftVelocity);
-			else
-				lift1.moveVelocity(0);
-		}
-		// if (lift1.getPosition() < liftLowPos)
-		// {
-		// 	lift1.moveAbsolute(liftLowPos, liftVelocity);
-		// }
-		// if (lift1.getPosition() > liftHighPos)
-		// {
-		// 	lift1.moveAbsolute(liftHighPos, liftVelocity);
-		// }
-
-		// if (control.L1())
-		// {
-		// 	lift1.moveAbsolute(liftHighPos, liftVelocity);
-		// 	liftMode = 0;
-		// }
-		// else if (control.L2())
-		// {
-		// 	lift1.moveAbsolute(liftLowPos, liftVelocity);
-		// 	liftMode = 0;
-		// }
-
-		if (control.X())
-		{
-			if (t % 12 == 0)
-			{
-				liftLowPos++;
-				liftHighPos++;
-			}
-		}
-		if (control.B())
-		{
-			if (t % 12 == 0)
-			{
-				liftLowPos--;
-				liftHighPos--;
-			}
+		if (control.get_digital_new_press(DIGITAL_DOWN)) {
+			lift3--;
 		}
 
-		if (control.DOWN())
+		if (control.get_digital_new_press(DIGITAL_LEFT))
 		{
-			clamp1.set_value(true);
+			clamp1.flip();
 		}
-		else if (control.UP())
+		if (control.get_digital_new_press(DIGITAL_A))
 		{
-			clamp1.set_value(false);
+			clamp2.flip();
 		}
+
+		// lift1.drive(true, false);
+
+//		cout<<control.R1()<<' '<<control.R2()<<'\n';
+
+		textField.setText(std::to_string(control.R1()));
+
 
 		// textField.setText(std::to_string(lift1.getPosition()));
 		textField.setText(
@@ -145,12 +87,18 @@ void opcontrol() {
 			toStr(chassis->getOdometry()->getState().theta.convert(1_deg)) + "\n" +
 			toStr(control.L1()) + " " + toStr(control.L2()) + " " + toStr(control.A()) + "\n"
 			);
-		if (t % 100 == 0) {
-			cout<<
-				toStr(chassis->getOdometry()->getState().x.convert(1_in)) + " " +
-				toStr(chassis->getOdometry()->getState().y.convert(1_in)) + " " +
-				toStr(chassis->getOdometry()->getState().theta.convert(1_deg))
-			<<endl; 
+		// if (t % 100 == 0) {
+		// 	cout<<
+		// 		toStr(chassis->getOdometry()->getState().x.convert(1_in)) + " " +
+		// 		toStr(chassis->getOdometry()->getState().y.convert(1_in)) + " " +
+		// 		toStr(chassis->getOdometry()->getState().theta.convert(1_deg))
+		// 	<<endl; 
+		// }
+		if (control.L1() && control.L2() && control.R1() && control.R2()) {
+			lift1.moveAbsolute(0, 200);
+			lift2.moveAbsolute(0, 200);
+			lift3.moveAbsolute(0, 200);
+			pros::delay(5000);
 		}
 		pros::delay(4);
 	}
