@@ -3,21 +3,32 @@
 
 void runAutonR()
 {
-
     /* (0,0) is bottom left corner
     * Robot pivot at center
     */
     // start from bottom right.
-    chassis->setState({(matSize-rsHalf)*1_in, 4.5*matSize*1_in, 0_deg});
+    chassis->setState({(matSize-rsHalf)*1_in, 4.5*matSize*1_in, 180_deg});
+    // goToGoal(goalAlliance);
+
     goToGoalRev(goalR);
     clamp2.set(1);
+    lift1.set(1);
+    lift2.set(2);
+    delay(100);
     moveTo(1.5*matSize, 4.5*matSize);
-    lift1.set;
-    lift3 = 0;//lift 3 bot
+
+    lift3.set(0);
+    rotateToL(90);
     clamp2.set(0);
-    moveTo(1.5 * matSize, 5.5 * matSize);
-    lift3 = 1;//lift 3 mid
+    goToGoal(goalAlliance);
+    lift3.set(1);
+    delay(500);
     roller.moveVelocity(rollerVelocity);
+    moveToRev(1.5*matSize, 4.8*matSize);
+    delay(1000);
+
+    moveToRev(3*matSize, 5*matSize, 0, 70);
+    moveToRev(3*matSize, 5*matSize, 0, 70);
 }
 /*
     // first mobile goal

@@ -21,17 +21,15 @@ okapi::MotorGroup left({
 /* front lift */
 Lift lift1(
     okapi::Motor(3, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    80,
-    990
+    {80, 300, 990}
 );
 
 Lift lift2(
     okapi::Motor(4, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    80,
-    960
+    {80, 300, 960}
 );
 /* back low lift */
-LiftV2 lift3(
+Lift lift3(
     okapi::Motor(5, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
     {-500,-300, 0}
 );
@@ -43,13 +41,9 @@ std::shared_ptr<okapi::OdomChassisController> chassis;
 
 const int liftVoltage = 4000;
 const int liftVelocity = 100;
-const int rollerVelocity = 95;
+const int rollerVelocity = 88;
 
 const int backLiftVelocity = 20;
-
-double liftLowPos = 15;
-double liftMidPos = 50;
-double liftHighPos = 750;
 
 double clawLowPos = 0;
 double clawHighPos = -210;
