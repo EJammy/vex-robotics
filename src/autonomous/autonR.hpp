@@ -8,9 +8,18 @@ void runAutonR()
     * Robot pivot at center
     */
     // start from bottom right.
-
     chassis->setState({(matSize-rsHalf)*1_in, 4.5*matSize*1_in, 0_deg});
-
+    goToGoalRev(goalR);
+    clamp2.set(1);
+    moveTo(1.5*matSize, 4.5*matSize);
+    lift1.set;
+    lift3 = 0;//lift 3 bot
+    clamp2.set(0);
+    moveTo(1.5 * matSize, 5.5 * matSize);
+    lift3 = 1;//lift 3 mid
+    roller.moveVelocity(rollerVelocity);
+}
+/*
     // first mobile goal
     // moveTo(2.6*matSize, -1.5*matSize);
     // goToGoal(goalR, true, -2, 20);
@@ -26,5 +35,4 @@ void runAutonR()
 
 
     clearLine();
-
-}
+*/
