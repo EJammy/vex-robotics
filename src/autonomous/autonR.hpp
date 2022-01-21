@@ -8,12 +8,6 @@ void runAutonR()
     */
     // start from bottom right.
     chassis->setState({(matSize-rsHalf)*1_in, 4.5*matSize*1_in, 180_deg});
-    left.moveRelative(360, 10);
-    right.moveRelative(360, 10);
-    delay(5000);
-    // moveRev(-matSize);
-    // delay(1000);
-    return;
     // goToGoal(goalAlliance);
 
     goToGoalRev(goalR);
