@@ -8,6 +8,12 @@ void runAutonR()
     */
     // start from bottom right.
     chassis->setState({(matSize-rsHalf)*1_in, 4.5*matSize*1_in, 180_deg});
+    left.moveRelative(360, 10);
+    right.moveRelative(360, 10);
+    delay(5000);
+    // moveRev(-matSize);
+    // delay(1000);
+    return;
     // goToGoal(goalAlliance);
 
     goToGoalRev(goalR);
@@ -24,11 +30,12 @@ void runAutonR()
     lift3.set(1);
     delay(500);
     roller.moveVelocity(rollerVelocity);
-    moveToRev(1.5*matSize, 4.8*matSize);
+    // moveToRev(1.5*matSize, 4.8*matSize);
     delay(1000);
 
-    moveToRev(3*matSize, 5*matSize, 0, 70);
-    moveToRev(3*matSize, 5*matSize, 0, 70);
+    // moveToRev(3*matSize, 5*matSize, 0, 70);
+    // moveToRev(3*matSize, 5*matSize, 0, 70);
+    moveTo(1.5*matSize, 4.5*matSize);
 }
 /*
     // first mobile goal

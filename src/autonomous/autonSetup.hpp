@@ -20,10 +20,10 @@ const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platf
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
 const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
 
-const double mxV1 = 150;
-const double mxV2 = 50;
+const double mxV1 = 10;
+const double mxV2 = 10;
 const double circumfrence = 4*PI;
-const int move_t_extra = 10;
+const int move_t_extra = 80;
 const int autonVelocity = 10;
 
 void moveFwd(double dist, double velocity = mxV1, bool stop = true) {
@@ -38,6 +38,11 @@ void moveFwd(double dist, double velocity = mxV1, bool stop = true) {
         delay(300);
     }
 }
+    // dist = dist/circumfrence*360;
+    // left.moveRelative(dist, velocity);
+    // right.moveRelative(dist, velocity);
+    // delay(5000);
+    // while (!left.isStopped() || !right.isStopped()) delay(100);
 
 void moveRev(double dist, double velocity = mxV1, bool stop = true) {
     moveFwd(dist, -velocity, stop);
@@ -58,13 +63,11 @@ void rotateToL(double d) {
     rotateTo(d);
 }
 
-const double minDistEpsilon = 3;
+const double minDistEpsilon = 2;
 void moveTo(double x, double y, double delta = 0.0, double velocity = mxV1, bool stop = true)
 {
-    dist_t xdist = x*1_in;
-    dist_t ydist = y*1_in;
-    xdist = xdist - chassis->getOdometry()->getState().x;
-    ydist = ydist - chassis->getOdometry()->getState().y;
+    dist_t xdist = x*1_in - chassis->getOdometry()->getState().x;
+    dist_t ydist = y*1_in - chassis->getOdometry()->getState().y;
     if ((xdist * xdist + ydist * ydist).convert(1_in*1_in) < minDistEpsilon * minDistEpsilon)
         return;
 
@@ -79,15 +82,18 @@ void moveTo(double x, double y, double delta = 0.0, double velocity = mxV1, bool
         if (abs(theta) > 2)
             rotateTo(theta); // math checks out
     }
-    moveFwd((okapi::sqrt(xdist*xdist + ydist*ydist) - delta*1_in).convert(1_in), velocity, stop);
+    int t = 4;
+    // while ((xdist * xdist + ydist * ydist).convert(1_in*1_in) > minDistEpsilon * minDistEpsilon && t--) {
+    //     dist_t xdist = x*1_in - chassis->getOdometry()->getState().x;
+    //     dist_t ydist = y*1_in - chassis->getOdometry()->getState().y;
+        moveFwd((okapi::sqrt(xdist*xdist + ydist*ydist) - delta*1_in).convert(1_in), velocity, stop);
+    // }
 }
 
 void moveToRev(double x, double y, double delta = 0.0, double velocity = mxV1, bool stop = true)
 {
-    dist_t xdist = x*1_in;
-    dist_t ydist = y*1_in;
-    xdist = xdist - chassis->getOdometry()->getState().x;
-    ydist = ydist - chassis->getOdometry()->getState().y;
+    dist_t xdist = x*1_in - chassis->getOdometry()->getState().x;
+    dist_t ydist = y*1_in - chassis->getOdometry()->getState().y;
     if ((xdist * xdist + ydist * ydist).convert(1_in*1_in) < minDistEpsilon * minDistEpsilon)
         return;
 
@@ -102,7 +108,12 @@ void moveToRev(double x, double y, double delta = 0.0, double velocity = mxV1, b
         if (abs(theta) > 2)
             rotateTo(theta); // math checks out
     }
-    moveRev((-okapi::sqrt(xdist*xdist + ydist*ydist) + delta*1_in).convert(1_in), velocity, stop);
+    int t = 4;
+    // while ((xdist * xdist + ydist * ydist).convert(1_in*1_in) > minDistEpsilon * minDistEpsilon && t--) {
+    //     dist_t xdist = x*1_in - chassis->getOdometry()->getState().x;
+    //     dist_t ydist = y*1_in - chassis->getOdometry()->getState().y;
+        moveRev((-okapi::sqrt(xdist*xdist + ydist*ydist) + delta*1_in).convert(1_in), velocity, stop);
+    // }
 }
 
 const int defaultDelta2 = 8;
@@ -115,7 +126,7 @@ void goToGoal(Pos p, bool twoStep = false, double goalDelta2 = defaultDelta2, do
         moveTo(x, y, goalDelta1, mxV1, false);
         moveTo(x, y, goalDelta2, mxV2);
     } else {
-        moveTo(x, y, goalDelta2);
+        moveTo(x, y, goalDelta2, mxV2);
     }
 }
 void goToGoalRev(Pos p, bool twoStep = false, double goalDelta2 = defaultDelta2, double goalDelta1 = defaultDelta1)
@@ -126,7 +137,7 @@ void goToGoalRev(Pos p, bool twoStep = false, double goalDelta2 = defaultDelta2,
         moveToRev(x, y, goalDelta1, mxV1, false);
         moveToRev(x, y, goalDelta2, mxV2);
     } else {
-        moveToRev(x, y, goalDelta2);
+        moveToRev(x, y, goalDelta2, mxV2);
     }
 }
 // void goToGoalRev(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelta1 = 18)
