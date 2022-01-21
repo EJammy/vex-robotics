@@ -47,8 +47,8 @@ void opcontrol() {
 			roller.moveVoltage(0);
 		}
 
-		left.moveVoltage((control.L_Y() + control.R_X()*0.7)*12000);
-		right.moveVoltage((control.L_Y() - control.R_X()*0.7)*12000);
+		left.moveVoltage((control.L_Y() + control.R_X())*12000);
+		right.moveVoltage((control.L_Y() - control.R_X())*12000);
 
 		if (control.Y()) {
 			autonomous();
@@ -82,10 +82,8 @@ void opcontrol() {
 
 		// textField.setText(std::to_string(lift1.getPosition()));
 		textField.setText(
-			toStr(chassis->getOdometry()->getState().x.convert(1_in)) + " " +
-			toStr(chassis->getOdometry()->getState().y.convert(1_in)) + " " +
-			toStr(chassis->getOdometry()->getState().theta.convert(1_deg)) + "\n" +
 			toStr(control.L1()) + " " + toStr(control.L2()) + " " + toStr(control.A()) + "\n"
+			+ toStr(imu.get_rotation())
 			);
 		// if (t % 100 == 0) {
 		// 	cout<<

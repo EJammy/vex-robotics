@@ -26,158 +26,104 @@ const double circumfrence = 4*PI;
 const int move_t_extra = 80;
 const int autonVelocity = 10;
 
-void moveFwd(double dist, double velocity = mxV1, bool stop = true) {
-    double vInches = velocity/60.0*circumfrence; // velocity in inches
-    int t = dist/vInches*1000;
-    left.moveVelocity(velocity);
-    right.moveVelocity(velocity);
-    delay(t*chassisGearRatio + move_t_extra);
-    if (stop) {
-        left.moveVelocity(0);
-        right.moveVelocity(0);
-        delay(300);
+void moveFwd(double dist, double velocity = mxV1) {
+    dist = dist/circumfrence*360;
+    left.moveRelative(dist, velocity);
+    right.moveRelative(dist, velocity);
+    delay(5000);
+    while (!left.isStopped() || !right.isStopped()) delay(100);
+}
+
+void moveRev(double dist, double velocity = mxV1) {
+    moveFwd(dist, -velocity);
+}
+
+void rotateTo(double angle, double diff = 0.22) {
+    while (imu.get_rotation() < angle) {
+        left.moveVoltage(5000);
+        right.moveVoltage(-5000);
     }
-}
-    // dist = dist/circumfrence*360;
-    // left.moveRelative(dist, velocity);
-    // right.moveRelative(dist, velocity);
-    // delay(5000);
-    // while (!left.isStopped() || !right.isStopped()) delay(100);
+    return;
+    double targetAngle = 0;
+    PID tpid = PID(0.016, 0.00045, 0.1, 9, 0.15);
+    int t = 0;
+    targetAngle += angle;
+    tpid.setTarget(targetAngle);
+    while (t < 8) {
+        tpid.update(imu.get_rotation());
+        double force = clamp(tpid.getOutput(), 0.7);
 
-void moveRev(double dist, double velocity = mxV1, bool stop = true) {
-    moveFwd(dist, -velocity, stop);
+        force *= 12000;
+        left.moveVoltage(force);
+        right.moveVoltage(-force);
+
+        if (abs(imu.get_rotation() - targetAngle) < diff) t++;
+        else t = 0;
+        pros::delay(4);
+    }
+    pros::delay(20);
 }
 
-void rotateTo(double d) {
-    chassis->turnToAngle(d*1_deg);
-}
 void rotateToR(double d) {
-    double deg = chassis->getOdometry()->getState().theta.convert(1_deg);
+    double deg = 0;
     while (d - deg < 0) d += 360;
     rotateTo(d);
 }
 
 void rotateToL(double d) {
-    double deg = chassis->getOdometry()->getState().theta.convert(1_deg);
+    double deg = 0;
     while (d - deg > 0) d -= 360;
     rotateTo(d);
 }
 
 const double minDistEpsilon = 2;
-void moveTo(double x, double y, double delta = 0.0, double velocity = mxV1, bool stop = true)
-{
-    dist_t xdist = x*1_in - chassis->getOdometry()->getState().x;
-    dist_t ydist = y*1_in - chassis->getOdometry()->getState().y;
-    if ((xdist * xdist + ydist * ydist).convert(1_in*1_in) < minDistEpsilon * minDistEpsilon)
-        return;
-
-    double deg = chassis->getOdometry()->getState().theta.convert(1_deg);
-    if (ydist != 0_m)
-    {
-        auto theta = okapi::atan((xdist / ydist)).convert(1_deg);
-        if (ydist < 0_in) theta += 180;
-        theta = 90 - theta;
-        while (theta - deg < -180) theta += 360;
-        while (theta - deg > 180) theta -= 360;
-        if (abs(theta) > 2)
-            rotateTo(theta); // math checks out
-    }
-    int t = 4;
-    // while ((xdist * xdist + ydist * ydist).convert(1_in*1_in) > minDistEpsilon * minDistEpsilon && t--) {
-    //     dist_t xdist = x*1_in - chassis->getOdometry()->getState().x;
-    //     dist_t ydist = y*1_in - chassis->getOdometry()->getState().y;
-        moveFwd((okapi::sqrt(xdist*xdist + ydist*ydist) - delta*1_in).convert(1_in), velocity, stop);
-    // }
+double curX = 0;
+double curY = 0;
+void setState(double x, double y, double deg) {
+    curX = x;
+    curY = y;
+    imu.set_rotation(deg);
 }
-
-void moveToRev(double x, double y, double delta = 0.0, double velocity = mxV1, bool stop = true)
+void moveTo(double x, double y, bool rev = false, double delta = 0.0, double velocity = mxV1)
 {
-    dist_t xdist = x*1_in - chassis->getOdometry()->getState().x;
-    dist_t ydist = y*1_in - chassis->getOdometry()->getState().y;
-    if ((xdist * xdist + ydist * ydist).convert(1_in*1_in) < minDistEpsilon * minDistEpsilon)
+    double dx = x-curX;
+    double dy = y-curY;
+    curX = x;
+    curY = y;
+    if (dx * dx + dy * dy < minDistEpsilon * minDistEpsilon)
         return;
 
-    double deg = chassis->getOdometry()->getState().theta.convert(1_deg);
-    if (ydist != 0_m)
+    double deg = 0;
+    if (dy != 0)
     {
-        auto theta = okapi::atan((xdist / ydist)).convert(1_deg);
-        if (ydist > 0_in) theta += 180;
+        auto theta = atan(dx / dy);
+        if ( (!rev && dy < 0) || (rev && dy > 0)) theta += 180;
         theta = 90 - theta;
         while (theta - deg < -180) theta += 360;
         while (theta - deg > 180) theta -= 360;
         if (abs(theta) > 2)
             rotateTo(theta); // math checks out
     }
-    int t = 4;
-    // while ((xdist * xdist + ydist * ydist).convert(1_in*1_in) > minDistEpsilon * minDistEpsilon && t--) {
-    //     dist_t xdist = x*1_in - chassis->getOdometry()->getState().x;
-    //     dist_t ydist = y*1_in - chassis->getOdometry()->getState().y;
-        moveRev((-okapi::sqrt(xdist*xdist + ydist*ydist) + delta*1_in).convert(1_in), velocity, stop);
-    // }
+    moveFwd((rev?-1:1)*(sqrt(dx*dx+dy*dy) - delta), velocity);
 }
 
 const int defaultDelta2 = 8;
 const int defaultDelta1 = 18;
-void goToGoal(Pos p, bool twoStep = false, double goalDelta2 = defaultDelta2, double goalDelta1 = defaultDelta1)
+void goToGoal(Pos p, double goalDelta2 = defaultDelta2, double goalDelta1 = defaultDelta1)
 {
     double x = p.first;
     double y = p.second;
-    if (twoStep) {
-        moveTo(x, y, goalDelta1, mxV1, false);
-        moveTo(x, y, goalDelta2, mxV2);
-    } else {
-        moveTo(x, y, goalDelta2, mxV2);
-    }
+    moveTo(x, y, false, goalDelta2, mxV2);
 }
-void goToGoalRev(Pos p, bool twoStep = false, double goalDelta2 = defaultDelta2, double goalDelta1 = defaultDelta1)
+
+void goToGoalRev(Pos p, double goalDelta2 = defaultDelta2, double goalDelta1 = defaultDelta1)
 {
     double x = p.first;
     double y = p.second;
-    if (twoStep) {
-        moveToRev(x, y, goalDelta1, mxV1, false);
-        moveToRev(x, y, goalDelta2, mxV2);
-    } else {
-        moveToRev(x, y, goalDelta2, mxV2);
-    }
+    moveTo(x, y, true, goalDelta2, mxV2);
 }
-// void goToGoalRev(Pos p, bool twoStep = true, double goalDelta2 = 5, double goalDelta1 = 18)
-// {
-//     double x = p.first;
-//     double y = p.second;
-//     if (twoStep) {
-//         moveToRev(x, y, goalDelta1, false);
-//         wait2();
-//     }
-//     moveToRev(x, y, goalDelta2, false, mxV2);
-//     wait1();
 
-//     chassis->setMaxVelocity(mxV1);
-// }
 
-// void turn(double angle, double diff = 0.22) {
-//     double targetAngle = 0;
-//     PID tpid = PID(0.016, 0.00045, 0.1, 9, 0.15);
-//     int t = 0;
-//     targetAngle += angle;
-//     tpid.setTarget(targetAngle);
-//     while (t < 8) {
-//         tpid.update(imu.get_rotation());
-//         double force = clamp(tpid.getOutput(), 0.7);
-
-//         force *= 12000;
-//         left.moveVoltage(force);
-//         right.moveVoltage(-force);
-
-//         // if (imu.get_rotation() > targetAngle)
-//         // 	chassis->getModel()->rotate(-20);
-//         // else
-//         // 	chassis->getModel()->rotate(20);
-//         if (abs(imu.get_rotation() - targetAngle) < diff) t++;
-//         else t = 0;
-//         pros::delay(4);
-//     }
-//     pros::delay(20);
-// }
 
 // void clearLine()
 // {

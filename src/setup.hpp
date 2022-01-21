@@ -35,9 +35,7 @@ Lift lift3(
 );
 
 okapi::Motor roller(7, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees);
-pros::Imu imu(6);
-
-std::shared_ptr<okapi::OdomChassisController> chassis;
+pros::Imu imu(8);
 
 const int liftVoltage = 4000;
 const int liftVelocity = 100;
@@ -58,22 +56,6 @@ const double chassisGearRatio = 1;
 // const double liftDelta = 610 - 15;
 // const double liftHighPos = 410;
 
-void calibrateMotorAngle(okapi::AbstractMotor &motor, double &lowPos, double &highPos, int voltage = -2500)
-{
-    double lastPos = INFINITY;
-
-    while (abs(motor.getPosition() - lastPos) > 5)
-    {
-        lastPos = motor.getPosition();
-        motor.moveVoltage(voltage);
-        pros::delay(100);
-    }
-    lastPos = motor.getPosition();
-    lowPos += lastPos;
-    highPos += lastPos;
-    motor.moveVelocity(0);
-}
-
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -88,20 +70,4 @@ void initialize() {
     left.setBrakeMode(AbstractMotor::brakeMode::brake);
     right.setBrakeMode(AbstractMotor::brakeMode::brake);
     // claw.setVoltageLimit(1000);
-
-    chassis =
-        ChassisControllerBuilder()
-        .withMotors(left, right)
-        /* set gearset, wheel diam and wheel track */
-        .withDimensions(AbstractMotor::gearset::green, {{4_in, 15_in}, imev5GreenTPR * chassisGearRatio})
-        /* specify the tracking wheels diameter (2.75 in), track (7 in), and TPR (360) */
-        .withOdometry()
-        .withGains(
-            // {kp, ki, kd}
-            {0.001, 0, 0},// distance controller gains
-            {0.002, 0, 0} // turn controller gains
-            // {0.001, 0, 0.0001}  // angle controller gains (helps drive straight)
-        )
-        // .withClosedLoopControllerTimeUtil(50, 5, 2000_ms)
-        .buildOdometry();
 }

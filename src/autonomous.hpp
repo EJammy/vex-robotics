@@ -35,13 +35,12 @@ void autonomous() {
     /* (0,0) is bottom left corner
     * Robot pivot at center
     */
-    chassis->setMaxVelocity(mxV1);
     // runAutonSkill();
     // delay(1000);
     // return;
 
-    // autonTest();
-    runAutonR();
+    autonTest();
+
     return;
 
     // if (autonSelection == 0){

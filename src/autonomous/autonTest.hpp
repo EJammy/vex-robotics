@@ -2,9 +2,9 @@
 
 void autonTest()
 {
-    chassis->setState({0_in, 0_in, 0_deg});
+    rotateTo(180);
     // moveTo(matSize, 0);
-    moveTo(-matSize, -matSize);
+    // moveTo(-matSize, -matSize);
     // moveTo(0, matSize*2);
     // moveTo(0, 0);
 

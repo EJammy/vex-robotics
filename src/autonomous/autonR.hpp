@@ -7,14 +7,7 @@ void runAutonR()
     * Robot pivot at center
     */
     // start from bottom right.
-    chassis->setState({(matSize-rsHalf)*1_in, 4.5*matSize*1_in, 180_deg});
-    left.moveRelative(360, 10);
-    right.moveRelative(360, 10);
-    delay(5000);
-    // moveRev(-matSize);
-    // delay(1000);
-    return;
-    // goToGoal(goalAlliance);
+    setState((matSize-rsHalf)*1, 4.5*matSize*1, 180);
 
     goToGoalRev(goalR);
     clamp2.set(1);
