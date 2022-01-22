@@ -38,9 +38,9 @@ void opcontrol() {
 		t++;
 
 		// chassis->getModel()->arcade(control.L_Y(), control.L_X()*0.7);
-		if (control.B()) {
+		if (control.Y()) {
 			roller.moveVelocity(-rollerVelocity);
-		} else if (control.L_Y() < 0 || control.X()) {
+		} else if (control.L_Y() < 0 || control.A()) {
 			roller.moveVelocity(rollerVelocity);
 		} else {
 			roller.moveVoltage(0);
@@ -51,6 +51,8 @@ void opcontrol() {
 
 		if (control.Y() && control.X() && control.B()) {
 			roller.moveVoltage(0);
+			clamp1.set(0);
+			clamp2.set(0);
 			imu.reset();
 			delay(100);
 			while (imu.is_calibrating()) delay(100);
@@ -60,18 +62,18 @@ void opcontrol() {
 		lift1.drive(control.R1(), control.R2());
 		lift2.drive(control.L1(), control.L2());
 		// lift3.drive(control.UP(), control.DOWN());
-		if (control.get_digital_new_press(DIGITAL_UP)) {
+		if (control.get_digital_new_press(DIGITAL_DOWN)) {
 			lift3++;
 		}
-		if (control.get_digital_new_press(DIGITAL_DOWN)) {
+		if (control.get_digital_new_press(DIGITAL_B)) {
 			lift3--;
 		}
 
-		if (control.get_digital_new_press(DIGITAL_LEFT))
+		if (control.get_digital_new_press(DIGITAL_RIGHT))
 		{
 			clamp1.flip();
 		}
-		if (control.get_digital_new_press(DIGITAL_A))
+		if (control.get_digital_new_press(DIGITAL_Y))
 		{
 			clamp2.flip();
 		}

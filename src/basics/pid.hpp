@@ -1,5 +1,7 @@
 #include "main.h"
 
+using std::abs; // important!! code uses abs(int) if not used
+
 struct PID{
 	double error = INFINITY;
 	double target = 0;
@@ -31,7 +33,7 @@ struct PID{
 		}
 		lastError = error;
 		/* to do: figure out why std::abs is different from abs */
-		if (std::abs(error) < iLim && std::abs(error) > iStop){
+		if (abs(error) < iLim && abs(error) > iStop){
 			integral += error;
 		}else{
 			integral = 0;

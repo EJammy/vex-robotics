@@ -94,17 +94,20 @@ void moveTo(double x, double y, bool rev = false, double delta = 0.0, double vel
     if (dx * dx + dy * dy < minDistEpsilon * minDistEpsilon)
         return;
 
-    double deg = 0;
+    double deg = imu.get_rotation();
+    double theta = 90 * (dx < 0 ? -1:1);
     if (dy != 0)
     {
-        auto theta = atan(dx / dy);
-        if ( (!rev && dy < 0) || (rev && dy > 0)) theta += 180;
-        theta = 90 - theta;
-        while (theta - deg < -180) theta += 360;
-        while (theta - deg > 180) theta -= 360;
-        if (abs(theta) > 2)
-            rotateTo(theta); // math checks out
+        theta = okapi::atan((dx / dy) * 1_in / 1_in).convert(1_deg);
     }
+    if ( (!rev && dy < 0) || (rev && dy > 0)) theta += 180;
+    theta = 90 - theta;
+    while (theta - deg < -180) theta += 360;
+    while (theta - deg > 180) theta -= 360;
+    // if (abs(theta - deg) > 2)
+        rotateTo(theta); // math checks out
+    cout<<theta<<endl;
+
     moveFwd((rev?-1:1)*(sqrt(dx*dx+dy*dy) - delta), velocity);
 }
 

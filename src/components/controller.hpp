@@ -1,5 +1,7 @@
 #include "main.h"
 
+#include <iostream>
+
 /**
  * wrapper class for pros::Controller
  * shorter digital input

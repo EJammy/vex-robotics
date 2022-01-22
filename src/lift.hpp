@@ -5,10 +5,10 @@ class Lift : public okapi::Motor
 {
     double liftVelocity;
     const std::vector<double> pos;
-    size_t cur = 0;
+    size_t cur;
     public:
-        Lift(okapi::Motor motor, std::initializer_list<double> positions, double velocity = 100) :
-            okapi::Motor(motor), pos(positions), liftVelocity(velocity)
+        Lift(okapi::Motor motor, std::initializer_list<double> positions, double velocity = 200, int initPos = 0) :
+            okapi::Motor(motor), pos(positions), liftVelocity(velocity), cur(initPos)
         {
             tarePosition();
             setBrakeMode(AbstractMotor::brakeMode::hold);

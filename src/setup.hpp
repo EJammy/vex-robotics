@@ -32,7 +32,9 @@ Lift lift2(
 /* back low lift */
 Lift lift3(
     okapi::Motor(5, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    {-500,-300, 0}
+    {-500,-300, 0},
+    200,
+    2
 );
 
 okapi::Motor roller(7, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees);
@@ -66,8 +68,6 @@ const double chassisGearRatio = 1;
 void initialize() {
     using namespace okapi;
 
-    // left.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
-    // right.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
     left.setBrakeMode(AbstractMotor::brakeMode::brake);
     right.setBrakeMode(AbstractMotor::brakeMode::brake);
     // claw.setVoltageLimit(1000);

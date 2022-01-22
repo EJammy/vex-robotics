@@ -10,6 +10,7 @@
 using std::cout;
 using std::endl;
 using std::uint8_t;
+using std::abs;
 using dist_t = okapi::QLength;
 using port_t = uint8_t;
 using sonic_t = pros::ADIUltrasonic;

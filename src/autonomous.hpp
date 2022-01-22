@@ -39,9 +39,9 @@ void autonomous() {
     // runAutonSkill();
     // delay(1000);
     // return;
-    // runAutonR();
+    runAutonR();
 
-    autonTest();
+    // autonTest();
 
     return;
 
