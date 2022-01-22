@@ -46,4 +46,15 @@ class Lift : public okapi::Motor
                     moveVelocity(0);
             }
         }
+
+        void resetPos(int voltage) {
+            if (pos.front() >= 0) voltage *= -1;
+            moveVoltage(voltage);
+            delay(80);
+            while (getActualVelocity() > 10) {
+                delay(50);
+            }
+            this->moveVoltage(0);
+            tarePosition();
+        }
 };

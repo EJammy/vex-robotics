@@ -4,6 +4,7 @@
 #include "autonomous/autonTest.hpp"
 // #include "autonomous/skill.hpp"
 #include "autonomous/autonR.hpp"
+#include "autonomous/bhl.hpp"
 
 int autonSelection = -1;
 lv_res_t autonChooseFunc(lv_obj_t *btn) {
@@ -42,6 +43,7 @@ void autonomous() {
 
     // autonTest();
     runAutonR();
+    // bhl();
     return;
 
     // if (autonSelection == 0){
