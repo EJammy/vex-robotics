@@ -50,7 +50,8 @@ void opcontrol() {
 		left.moveVoltage((control.L_Y() + control.R_X())*12000);
 		right.moveVoltage((control.L_Y() - control.R_X())*12000);
 
-		if (control.Y()) {
+		if (control.Y() && control.X() && control.B()) {
+			roller.moveVoltage(0);
 			autonomous();
 		}
 
@@ -93,9 +94,9 @@ void opcontrol() {
 		// 	<<endl; 
 		// }
 		if (control.L1() && control.L2() && control.R1() && control.R2()) {
-			lift1.moveAbsolute(0, 200);
-			lift2.moveAbsolute(0, 200);
-			lift3.moveAbsolute(0, 200);
+			lift1.resetPos(2000);
+			lift2.resetPos(2000);
+			lift3.resetPos(2000);
 			pros::delay(5000);
 		}
 		pros::delay(4);

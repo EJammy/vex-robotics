@@ -20,8 +20,8 @@ const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platf
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
 const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
 
-const double mxV1 = 10;
-const double mxV2 = 10;
+const double mxV1 = 150;
+const double mxV2 = 100;
 const double circumfrence = 4*PI;
 const int move_t_extra = 80;
 const int autonVelocity = 10;
