@@ -1,8 +1,10 @@
 #include "main.h"
+using pros::delay;
+
 class Lift : public okapi::Motor
 {
     double liftVelocity;
-    std::vector<double> pos;
+    const std::vector<double> pos;
     size_t cur = 0;
     public:
         Lift(okapi::Motor motor, std::initializer_list<double> positions, double velocity = 100) :
@@ -48,13 +50,14 @@ class Lift : public okapi::Motor
         }
 
         void resetPos(int voltage) {
+            if (getActualVelocity() == PROS_ERR_F) return;
             if (pos.front() >= 0) voltage *= -1;
             moveVoltage(voltage);
-            delay(80);
-            while (getActualVelocity() > 10) {
+            delay(200);
+            while (abs(getActualVelocity()) > 1) {
                 delay(50);
             }
-            this->moveVoltage(0);
+            moveVoltage(0);
             tarePosition();
         }
 };

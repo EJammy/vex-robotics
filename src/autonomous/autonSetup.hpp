@@ -26,38 +26,39 @@ const double circumfrence = 4*PI;
 const int move_t_extra = 80;
 const int autonVelocity = 10;
 
+
 void moveFwd(double dist, double velocity = mxV1) {
     dist = dist/circumfrence*360;
     left.moveRelative(dist, velocity);
     right.moveRelative(dist, velocity);
-    delay(5000);
-    while (!left.isStopped() || !right.isStopped()) delay(100);
+    delay(100);
+    int t = 0;
+
+    const int posErr = 5;
+    while (t < 12) {
+        if (left.getPositionError() < posErr && right.getPositionError() < posErr) t++;
+        delay(12);
+    }
 }
 
 void moveRev(double dist, double velocity = mxV1) {
     moveFwd(dist, -velocity);
 }
 
-void rotateTo(double angle, double diff = 0.22) {
-    while (imu.get_rotation() < angle) {
-        left.moveVoltage(5000);
-        right.moveVoltage(-5000);
-    }
-    return;
-    double targetAngle = 0;
-    PID tpid = PID(0.016, 0.00045, 0.1, 9, 0.15);
+void rotateTo(double targetAngle, double diff = 0.5) {
+    PID tpid = PID(0.05, 0.0005, 0.0, 20, 0.15);
     int t = 0;
-    targetAngle += angle;
     tpid.setTarget(targetAngle);
     while (t < 8) {
         tpid.update(imu.get_rotation());
-        double force = clamp(tpid.getOutput(), 0.7);
+        double force = clamp(tpid.getOutput(), 1);
 
         force *= 12000;
         left.moveVoltage(force);
         right.moveVoltage(-force);
 
-        if (abs(imu.get_rotation() - targetAngle) < diff) t++;
+        cout<<imu.get_rotation()<<'\n';
+        if (abs(tpid.error) < diff) t++;
         else t = 0;
         pros::delay(4);
     }

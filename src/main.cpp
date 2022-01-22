@@ -52,6 +52,9 @@ void opcontrol() {
 
 		if (control.Y() && control.X() && control.B()) {
 			roller.moveVoltage(0);
+			imu.reset();
+			delay(100);
+			while (imu.is_calibrating()) delay(100);
 			autonomous();
 		}
 
@@ -94,10 +97,14 @@ void opcontrol() {
 		// 	<<endl; 
 		// }
 		if (control.L1() && control.L2() && control.R1() && control.R2()) {
-			lift1.resetPos(2000);
-			lift2.resetPos(2000);
-			lift3.resetPos(2000);
-			pros::delay(5000);
+			lift1.moveVoltage(0);
+			lift2.moveVoltage(0);
+			lift3.moveVoltage(0);
+
+			lift1.resetPos(10000);
+			lift2.resetPos(10000);
+			lift3.resetPos(10000);
+			pros::delay(2000);
 		}
 		pros::delay(4);
 	}
