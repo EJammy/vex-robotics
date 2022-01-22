@@ -6,18 +6,15 @@ struct PID{
 	double integral = 0;
 	double derivative = 0;
 	double lastError = 0;
-	double kp;
-	double ki;
-	double kd;
-	double iLim; // integral kicks in only when abs(error) < iLim
-	double iStop; // integral resets to zero when abs(error) < iStop
-	PID(double _kp, double _ki, double _kd, double _iLim, double _iStop = -1){
-		kp = _kp;
-		ki = _ki;
-		kd = _kd;
-		iLim = _iLim;
-		iStop = _iStop;
-	}
+	const double kp;
+	const double ki;
+	const double kd;
+	const double iLim; // integral kicks in only when abs(error) < iLim
+	const double iStop; // integral resets to zero when abs(error) < iStop
+	PID(double _kp, double _ki, double _kd, double _iLim, double _iStop = -1) : 
+		kp(_kp), ki(_ki), kd(_kd), iLim(_iLim), iStop(_iStop)
+	{}
+
 	/* set new target and reset variables */
 	void setTarget(double newTarget){
 		target = newTarget;
@@ -33,7 +30,8 @@ struct PID{
 			derivative = error - lastError;
 		}
 		lastError = error;
-		if (abs(error) < iLim && abs(error) > iStop){
+		/* to do: figure out why std::abs is different from abs */
+		if (std::abs(error) < iLim && std::abs(error) > iStop){
 			integral += error;
 		}else{
 			integral = 0;

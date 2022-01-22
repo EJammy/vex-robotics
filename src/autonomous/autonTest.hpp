@@ -3,7 +3,10 @@
 void autonTest()
 {
     setState(0, 0, 0);
-    // rotateTo(180);
+    while (1){
+        rotateTo(15);
+        rotateTo(0);
+    }
     moveTo(matSize, 0);
     moveTo(matSize, matSize);
     // moveTo(-matSize, -matSize);

@@ -29,7 +29,6 @@ void opcontrol() {
 			// autonomous();
 
 	// lvButton guiButton(screenX-20, screenY-20, 100, 100, 0, lv_color_hex(0xFFFFFF), lv_scr_act());
-	lvText textField(20, 20, lv_scr_act(), "Foo");
 
 	int t = 0;
 	int liftMode = 1;

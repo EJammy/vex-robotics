@@ -36,20 +36,17 @@ void moveFwd(double dist, double velocity = mxV1) {
 
     const int posErr = 5;
     while (t < 12) {
-        if (left.getPositionError() < posErr && right.getPositionError() < posErr) t++;
+        if (abs(left.getPositionError()) < posErr && abs(right.getPositionError() < posErr)) t++;
+        else t = 0;
         delay(12);
     }
 }
 
-void moveRev(double dist, double velocity = mxV1) {
-    moveFwd(dist, -velocity);
-}
-
-void rotateTo(double targetAngle, double diff = 0.5) {
-    PID tpid = PID(0.05, 0.0005, 0.0, 20, 0.15);
+void rotateTo(double targetAngle, double diff = 0.2) {
+    PID tpid = PID(0.025, 0.0005, 0.0, 8, 0.15);
     int t = 0;
     tpid.setTarget(targetAngle);
-    while (t < 8) {
+    while (t < 12) {
         tpid.update(imu.get_rotation());
         double force = clamp(tpid.getOutput(), 1);
 
@@ -57,7 +54,10 @@ void rotateTo(double targetAngle, double diff = 0.5) {
         left.moveVoltage(force);
         right.moveVoltage(-force);
 
-        cout<<imu.get_rotation()<<'\n';
+        textField.setText( "R " + std::to_string(tpid.error) + " " + 
+            std::to_string(tpid.iLim)+ " " + std::to_string(tpid.iStop)+ " " + std::to_string(tpid.integral)
+            + " " + std::to_string( abs(tpid.error) < tpid.iLim && abs(tpid.error) > tpid.iStop ));
+
         if (abs(tpid.error) < diff) t++;
         else t = 0;
         pros::delay(4);

@@ -4,6 +4,7 @@
 #include "lift.hpp"
 #include "clamp.hpp"
 
+lvText textField(20, 20, lv_scr_act(), "Foo");
 
 ControllerWrapper control = ControllerWrapper(pros::E_CONTROLLER_MASTER);
 

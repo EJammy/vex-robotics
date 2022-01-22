@@ -7,7 +7,7 @@ void runAutonL()
     */
     // start @ left
 
-    chassis->setState({(matSize - rsHalf)*1_in, (1*matSize)*1_in});
+    setState(matSize - rsHalf, matSize, 0);
     goToGoal(goalL);
     clawClampSync();
     lift.moveAbsolute(50, liftVelocity);
