@@ -40,14 +40,14 @@ void opcontrol() {
 		// chassis->getModel()->arcade(control.L_Y(), control.L_X()*0.7);
 		if (control.Y()) {
 			roller.moveVelocity(-rollerVelocity);
-		} else if (control.L_Y() < 0 || control.X()) {
+		} else if (control.L_Y() > 0 || control.X()) {
 			roller.moveVelocity(rollerVelocity);
 		} else {
 			roller.moveVoltage(0);
 		}
 
-		left.moveVoltage((control.L_Y() + control.R_X())*12000);
-		right.moveVoltage((control.L_Y() - control.R_X())*12000);
+		left.moveVoltage((-control.L_Y() - control.R_X())*12000);
+		right.moveVoltage((-control.L_Y() + control.R_X())*12000);
 
 		if (control.A() && control.X()) {
 			roller.moveVoltage(0);
@@ -59,8 +59,8 @@ void opcontrol() {
 			autonomous();
 		}
 
-		lift1.drive(control.R1(), control.R2());
-		lift2.drive(control.L1(), control.L2());
+		lift1.drive(control.L1(), control.L2());
+		lift2.drive(control.R1(), control.R2());
 		// lift3.drive(control.UP(), control.DOWN());
 		if (control.get_digital_new_press(DIGITAL_DOWN)) {
 			lift3++;
@@ -69,11 +69,11 @@ void opcontrol() {
 			lift3--;
 		}
 
-		if (control.get_digital_new_press(DIGITAL_RIGHT))
+		if (control.get_digital_new_press(DIGITAL_Y))
 		{
 			clamp1.flip();
 		}
-		if (control.get_digital_new_press(DIGITAL_Y))
+		if (control.get_digital_new_press(DIGITAL_RIGHT))
 		{
 			clamp2.flip();
 		}
