@@ -1,15 +1,47 @@
-#include "main.h"
+#include "../basics/basics.hpp"
 
-#include <iostream>
+#include <fstream>
 
 /**
  * wrapper class for pros::Controller
  * shorter digital input
  * analog range [-100, 100] instead of [-127, 127]
  */
+
+enum controller_mapping_t {
+    cmap_lift1_up = 0,
+    cmap_lift1_down,
+    cmap_lift2_up,
+    cmap_lift2_down,
+    cmap_lift3_up,
+    cmap_lift3_down,
+    cmap_clamp1,
+    cmap_clamp2,
+	CONTROLLER_MAPPING_CNT
+};
+
 class ControllerWrapper: public pros::Controller{
 	private:
 	public:
+
+		using button_t = pros::controller_digital_e_t;
+		button_t list[CONTROLLER_MAPPING_CNT];
+
+        // ControllerWrapper() {
+		// 	button_t lift1_up = DIGITAL_R1;
+		// 	button_t lift1_down = DIGITAL_R2;
+		// 	button_t lift2_up = DIGITAL_L1;
+		// 	button_t lift2_down = DIGITAL_L2;
+		// 	button_t lift3_up = DIGITAL_DOWN;
+		// 	button_t lift3_down = DIGITAL_B;
+		// 	button_t clamp1 = DIGITAL_L1;
+		// 	button_t clamp2 = DIGITAL_L1;
+        // }
+
+		void init() {
+			std::ifstream fin("settings.txt");
+		}
+
 		ControllerWrapper(pros::controller_id_e_t id): pros::Controller(id){}
 		bool L1(){
 			return get_digital(DIGITAL_L1);

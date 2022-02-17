@@ -35,9 +35,13 @@ void moveFwd(double dist, double velocity = mxV1) {
     int t = 0;
 
     const int posErr = 5;
-    while (t < 12) {
+    int time = 0;
+    double vInches = velocity/60.0*circumfrence; // velocity in inches
+    int timeout = dist/vInches*1000;
+    while (t < 12 && time < timeout / 12 + 1000) {
         if (abs(left.getPositionError()) < posErr && abs(right.getPositionError() < posErr)) t++;
         else t = 0;
+        time++;
         delay(12);
     }
 }
@@ -94,14 +98,12 @@ void moveTo(double x, double y, bool rev = false, double delta = 0.0, double vel
     if (dx * dx + dy * dy < minDistEpsilon * minDistEpsilon)
         return;
 
-    double deg = imu.get_rotation();
-    double theta = 90 * (dx < 0 ? -1:1);
-    if (dy != 0)
-    {
-        theta = okapi::atan((dx / dy) * 1_in / 1_in).convert(1_deg);
-    }
+    if (dy == 0) dy = 0.001;
+    double theta = okapi::atan((dx / dy) * 1_in / 1_in).convert(1_deg);
+
     if ( (!rev && dy < 0) || (rev && dy > 0)) theta += 180;
     theta = 90 - theta;
+    double deg = imu.get_rotation();
     while (theta - deg < -180) theta += 360;
     while (theta - deg > 180) theta -= 360;
     // if (abs(theta - deg) > 2)
