@@ -11,16 +11,16 @@ void runAutonR()
 
     goToGoalRev(goalR);
     clamp2.set(1);
-    lift1.set(1);
-    lift2.set(2);
+    backLift.set(1);
+    mainLift.set(2);
     delay(100);
     moveTo(1.5*matSize, 4.5*matSize);
 
     moveTo(1.5*matSize, 4*matSize, true);
-    lift3.set(0);
+    lowLift.set(0);
     clamp2.set(0);
     goToGoal(goalAlliance);
-    lift3.set(1);
+    lowLift.set(1);
     delay(500);
     roller.moveVelocity(rollerVelocity);
     // moveToRev(1.5*matSize, 4.8*matSize);

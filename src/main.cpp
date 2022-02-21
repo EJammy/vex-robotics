@@ -41,7 +41,7 @@ void opcontrol() {
 		t++;
 
 		// chassis->getModel()->arcade(control.L_Y(), control.L_X()*0.7);
-		if (control.Y()) {
+		if (control.LEFT()) {
 			roller.moveVelocity(-rollerVelocity);
 		} else if (control.L_Y() > 0 || control.X()) {
 			roller.moveVelocity(rollerVelocity);
@@ -62,14 +62,14 @@ void opcontrol() {
 			autonomous();
 		}
 
-		lift1.drive(control.L1(), control.L2());
-		lift2.drive(control.R1(), control.R2());
-		// lift3.drive(control.UP(), control.DOWN());
+		backLift.drive(control.L1(), control.L2());
+		mainLift.drive(control.R1(), control.R2());
+		// lowLift.drive(control.UP(), control.DOWN());
 		if (control.get_digital_new_press(DIGITAL_DOWN)) {
-			lift3++;
+			lowLift++;
 		}
 		if (control.get_digital_new_press(DIGITAL_B)) {
-			lift3--;
+			lowLift--;
 		}
 
 		if (control.get_digital_new_press(DIGITAL_Y))
@@ -101,13 +101,13 @@ void opcontrol() {
 		// 	<<endl; 
 		// }
 		if (control.L1() && control.L2() && control.R1() && control.R2()) {
-			lift1.moveVoltage(0);
-			lift2.moveVoltage(0);
-			lift3.moveVoltage(0);
+			backLift.moveVoltage(0);
+			mainLift.moveVoltage(0);
+			lowLift.moveVoltage(0);
 
-			lift1.resetPos(10000);
-			lift2.resetPos(10000);
-			lift3.resetPos(10000);
+			backLift.resetPos(10000);
+			mainLift.resetPos(10000);
+			lowLift.resetPos(10000);
 			pros::delay(2000);
 		}
 		pros::delay(4);

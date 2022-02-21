@@ -20,18 +20,18 @@ okapi::MotorGroup left({
 });
 
 /* back lift */
-Lift lift1(
+Lift backLift(
     okapi::Motor(3, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
     {80, 300, 990}
 );
 
-Lift lift2(
+Lift mainLift(
     okapi::Motor(4, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
     {0, 300, 960}
 );
 
 /* front low lift */
-Lift lift3(
+Lift lowLift(
     okapi::Motor(5, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
     {-500,-300, 0},
     200,
