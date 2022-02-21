@@ -20,8 +20,8 @@ const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platf
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
 const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
 
-const double mxV1 = 150;
-const double mxV2 = 100;
+const double mxV1 = 100;
+const double mxV2 = mxV1;
 const double circumfrence = 4*PI;
 const int move_t_extra = 80;
 const int autonVelocity = 10;
@@ -36,21 +36,25 @@ void moveFwd(double dist, double velocity = mxV1) {
 
     const int posErr = 5;
     int time = 0;
-    double vInches = velocity/60.0*circumfrence; // velocity in inches
-    int timeout = abs(dist/vInches*1000);
-    while (t < 12 && time < timeout / 12 + 1000) {
+    double degPerSec = velocity / 60.0 * 360;
+    int timeout = abs(dist/degPerSec*1000);
+    timeout += 1000;
+    cout << "moving " << timeout << endl;
+    while (t < 12 && time < timeout / 12) {
         if (abs(left.getPositionError()) < posErr && abs(right.getPositionError()) < posErr) t++;
         else t = 0;
         time++;
         delay(12);
     }
+    cout << "> done " << time * 12 << endl;
 }
 
 void rotateTo(double targetAngle, double diff = 0.25) {
-    PID tpid = PID(0.025, 0.0005, 0.0, 8, 0.15);
+    cout << "rotating" << endl;
+    PID tpid = PID(0.05, 0.0005, 0.0, 6, 0.2); // to do: tune pid
     int t = 0;
     tpid.setTarget(targetAngle);
-    while (t < 12) {
+    while (t < 8) {
         tpid.update(imu.get_rotation());
         double force = clamp(tpid.getOutput(), 1);
 
