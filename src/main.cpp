@@ -24,6 +24,9 @@ void disabled() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+    selectL.hide();
+    selectR.hide();
+    selectWP.hide();
     // cout<< autonSelection << endl;
 			// competition_initialize();
 			// autonomous();
