@@ -8,8 +8,6 @@
 void disabled() {}
 
 
-
-
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -54,8 +52,8 @@ void opcontrol() {
 
 		if (control.A() && control.X()) {
 			roller.moveVoltage(0);
-			clamp1.set(0);
-			clamp2.set(0);
+			frontClamp.set(0);
+			backClamp.set(0);
 			imu.reset();
 			delay(100);
 			while (imu.is_calibrating()) delay(100);
@@ -63,6 +61,9 @@ void opcontrol() {
 		}
 
 		backLift.drive(control.L1(), control.L2());
+		if (lowLift.getPos() == 0) {
+			mainLift.set(2);
+		}
 		mainLift.drive(control.R1(), control.R2());
 		// lowLift.drive(control.UP(), control.DOWN());
 		if (control.get_digital_new_press(DIGITAL_DOWN)) {
@@ -74,11 +75,11 @@ void opcontrol() {
 
 		if (control.get_digital_new_press(DIGITAL_Y))
 		{
-			clamp1.flip();
+			frontClamp.flip();
 		}
 		if (control.get_digital_new_press(DIGITAL_RIGHT))
 		{
-			clamp2.flip();
+			backClamp.flip();
 		}
 
 		// lift1.drive(true, false);

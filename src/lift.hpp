@@ -6,6 +6,8 @@ class Lift : public okapi::Motor
     double liftVelocity;
     const std::vector<double> pos;
     size_t cur;
+    bool moving = false;
+
     public:
         Lift(okapi::Motor motor, std::initializer_list<double> positions, double velocity = 200, int initPos = 0) :
             okapi::Motor(motor), pos(positions), liftVelocity(velocity), cur(initPos)
@@ -14,9 +16,11 @@ class Lift : public okapi::Motor
             setBrakeMode(AbstractMotor::brakeMode::hold);
         }
 
+        size_t getPos() { return cur; }
         void set(int x) {
             cur = x;
             cur = std::min(cur, pos.size()-1);
+            moving = true;
             moveAbsolute(pos[cur], liftVelocity);
         }
 
@@ -35,6 +39,8 @@ class Lift : public okapi::Motor
             // cout<<up<<' '<<down<<'\n';
             double high = pos.back();
             double low = pos.front();
+            if (up || down) moving = false;
+            if (moving) return;
             if (up && getPosition() < high-5)
                 moveVelocity(liftVelocity);
             else if (down && getPosition() > low+5)

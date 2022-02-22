@@ -51,7 +51,7 @@ void moveFwd(double dist, double velocity = mxV1) {
 
 void rotateTo(double targetAngle, double diff = 0.25) {
     cout << "rotating" << endl;
-    PID tpid = PID(0.05, 0.0005, 0.0, 6, 0.2); // to do: tune pid
+    PID tpid = PID(0.04, 0.0005, 0.0, 6, 0.2); // to do: tune pid
     int t = 0;
     tpid.setTarget(targetAngle);
     while (t < 8) {

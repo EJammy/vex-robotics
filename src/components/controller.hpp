@@ -34,8 +34,8 @@ class ControllerWrapper: public pros::Controller{
 		// 	button_t lift2_down = DIGITAL_L2;
 		// 	button_t lift3_up = DIGITAL_DOWN;
 		// 	button_t lift3_down = DIGITAL_B;
-		// 	button_t clamp1 = DIGITAL_L1;
-		// 	button_t clamp2 = DIGITAL_L1;
+		// 	button_t frontClamp = DIGITAL_L1;
+		// 	button_t backClamp = DIGITAL_L1;
         // }
 
 		void init() {

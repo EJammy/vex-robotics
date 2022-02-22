@@ -8,8 +8,8 @@ lvText textField(20, 20, lv_scr_act(), "Foo");
 
 ControllerWrapper control = ControllerWrapper(pros::E_CONTROLLER_MASTER);
 
-Clamp clamp1('A');
-Clamp clamp2('B');
+Clamp frontClamp('A');
+Clamp backClamp('B');
 okapi::MotorGroup right({
     okapi::Motor(1, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
     okapi::Motor(10, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees),
