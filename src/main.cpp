@@ -41,7 +41,7 @@ void opcontrol() {
 		// chassis->getModel()->arcade(control.L_Y(), control.L_X()*0.7);
 		if (control.LEFT()) {
 			roller.moveVelocity(-rollerVelocity);
-		} else if (control.L_Y() > 0 || control.X()) {
+		} else if (control.L_Y() > 0 || control.A()) {
 			roller.moveVelocity(rollerVelocity);
 		} else {
 			roller.moveVoltage(0);
@@ -50,7 +50,7 @@ void opcontrol() {
 		left.moveVoltage((-control.L_Y() + control.R_X())*12000);
 		right.moveVoltage((-control.L_Y() - control.R_X())*12000);
 
-		if (control.A() && control.X()) {
+		if (control.A() && control.X() && control.LEFT() && control.UP()) {
 			roller.moveVoltage(0);
 			frontClamp.set(0);
 			backClamp.set(0);

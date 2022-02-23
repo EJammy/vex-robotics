@@ -9,6 +9,7 @@ const double matSize = 23.42; // distance of a mat on field
 // 16.8/2 = 8.4
 const double robotSize = 16.8;
 const double rsHalf = robotSize/2;
+const double platformDiff = 12;
 
 using Pos = std::pair<double, double>;
 const Pos goalL = {3*matSize, 1.5*matSize};
@@ -20,14 +21,14 @@ const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platf
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
 const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
 
-const double mxV1 = 100;
+const double mxV1 = 120;
 const double mxV2 = mxV1;
 const double circumfrence = 4*PI;
 const int move_t_extra = 80;
 const int autonVelocity = 10;
 
 
-void moveFwd(double dist, double velocity = mxV1) {
+void moveFwd(double dist, double velocity = mxV1, double targetAngle = 0) {
     dist = dist/circumfrence*360;
     left.moveRelative(dist, velocity);
     right.moveRelative(dist, velocity);
@@ -49,7 +50,7 @@ void moveFwd(double dist, double velocity = mxV1) {
     cout << "> done " << time * 12 << endl;
 }
 
-void rotateTo(double targetAngle, double diff = 0.25) {
+void rotateTo(double targetAngle, double diff = 0.20) {
     cout << "rotating" << endl;
     PID tpid = PID(0.04, 0.0005, 0.0, 6, 0.2); // to do: tune pid
     int t = 0;
@@ -118,25 +119,16 @@ void moveTo(double x, double y, bool rev = false, double delta = 0.0, double vel
     moveFwd((rev?-1:1)*(sqrt(dx*dx+dy*dy) - delta), velocity);
 }
 
-// const int x = true?-1:1;
-
-const int defaultDelta2 = 8;
-const int defaultDelta1 = 18;
-void goToGoal(Pos p, double goalDelta2 = defaultDelta2, double goalDelta1 = defaultDelta1)
+const int GDelta1 = 6;
+const int GDelta2 = 18;
+void goToGoal(Pos p, bool rev = false, double velocity = mxV2, double goalDelta1 = GDelta1)
 {
     double x = p.first;
     double y = p.second;
-    moveTo(x, y, false, goalDelta2, mxV2);
+    moveTo(x, y, rev, goalDelta1, mxV2);
 }
 
-void goToGoalRev(Pos p, double goalDelta2 = defaultDelta2, double goalDelta1 = defaultDelta1)
-{
-    double x = p.first;
-    double y = p.second;
-    moveTo(x, y, true, goalDelta2, mxV2);
-}
-
-
+// void goToGoal2step(Pos p, bool rev = false)
 
 // void clearLine()
 // {

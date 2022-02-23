@@ -2,7 +2,7 @@
 // #include "autonomous/autonRpush.hpp"
 // #include "autonomous/autonWP.hpp"
 #include "autonomous/autonTest.hpp"
-// #include "autonomous/skill.hpp"
+#include "autonomous/skill.hpp"
 #include "autonomous/autonR.hpp"
 
 int autonSelection = -1;
@@ -38,7 +38,7 @@ void autonomous() {
     // runAutonSkill();
     // delay(1000);
     // return;
-    // runAutonR();
+    runAutonR();
 
     autonTest();
 

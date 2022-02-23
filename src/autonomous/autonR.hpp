@@ -9,8 +9,8 @@ void runAutonR()
     // start from bottom right.
     setState((matSize-12)*1, 4.5*matSize*1, 180);
 
-    goToGoalRev(goalR);
-    backClamp.set(1);
+    goToGoal(goalR, true);
+    backClamp.set(true);
     backLift.set(1);
     mainLift.set(2);
     delay(100);
@@ -18,7 +18,7 @@ void runAutonR()
 
     moveTo(1.5*matSize, 4*matSize, true);
     lowLift.set(0);
-    backClamp.set(0);
+    backClamp.set(false);
     goToGoal(goalAlliance);
     lowLift.set(1);
     delay(500);

@@ -22,7 +22,7 @@ okapi::MotorGroup left({
 /* back lift */
 Lift backLift(
     okapi::Motor(3, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    {80, 300, 990}
+    {0, 300, 990}
 );
 
 Lift mainLift(
@@ -33,7 +33,7 @@ Lift mainLift(
 /* front low lift */
 Lift lowLift(
     okapi::Motor(5, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    {-500,-300, 0},
+    {-555, -360, 0},
     200,
     2
 );
@@ -43,7 +43,7 @@ pros::Imu imu(8);
 
 const int liftVoltage = 4000;
 const int liftVelocity = 100;
-const int rollerVelocity = 88;
+const int rollerVelocity = 101;
 
 const int backLiftVelocity = 20;
 
