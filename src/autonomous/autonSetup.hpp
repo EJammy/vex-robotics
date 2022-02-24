@@ -21,14 +21,14 @@ const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platf
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
 const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
 
-const double mxV1 = 120;
-const double mxV2 = mxV1;
+const double mxV1 = 150; // normal velocity
+const double mxV2 = 100; // velocity when grabbing goal
 const double circumfrence = 4*PI;
 const int move_t_extra = 80;
 const int autonVelocity = 10;
 
 
-void moveFwd(double dist, double velocity = mxV1, double targetAngle = 0) {
+void moveFwd(double dist, double velocity = mxV1, double targetAngle = NAN) {
     dist = dist/circumfrence*360;
     left.moveRelative(dist, velocity);
     right.moveRelative(dist, velocity);
@@ -126,6 +126,13 @@ void goToGoal(Pos p, bool rev = false, double velocity = mxV2, double goalDelta1
     double x = p.first;
     double y = p.second;
     moveTo(x, y, rev, goalDelta1, mxV2);
+}
+
+void goToGoalT(Pos p, bool rev = false, double dist1 = GDelta1, double dist2 = GDelta2, double v1 = mxV1, double v2 = mxV2) {
+    double x = p.first;
+    double y = p.second;
+    moveTo(x, y, rev, dist2, mxV1);
+    moveTo(x, y, rev, dist1, mxV2);
 }
 
 // void goToGoal2step(Pos p, bool rev = false)

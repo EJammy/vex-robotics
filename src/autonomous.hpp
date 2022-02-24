@@ -40,7 +40,7 @@ void autonomous() {
     // return;
     runAutonR();
 
-    autonTest();
+    // autonTest();
 
     return;
 

@@ -9,7 +9,7 @@ void runAutonR()
     // start from bottom right.
     setState((matSize-12)*1, 4.5*matSize*1, 180);
 
-    goToGoal(goalR, true);
+    goToGoalT(goalR, true);
     backClamp.set(true);
     backLift.set(1);
     mainLift.set(2);
@@ -19,7 +19,7 @@ void runAutonR()
     moveTo(1.5*matSize, 4*matSize, true);
     lowLift.set(0);
     backClamp.set(false);
-    goToGoal(goalAlliance);
+    goToGoalT(goalAlliance);
     lowLift.set(1);
     delay(500);
     roller.moveVelocity(rollerVelocity);
