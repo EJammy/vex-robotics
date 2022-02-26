@@ -7,25 +7,29 @@ void runAutonR()
     * Robot pivot at center
     */
     // start from bottom right.
-    setState((matSize-10)*1, 4.5*matSize*1, 180);
+    setState((matSize-5)*1, 4.5*matSize*1, 180);
 
-    goToGoal(goalR, true);
-    backClamp.set(true);
-    backLift.set(1);
+    // goToGoal(goalR, true);
+    moveTo(4*matSize, 4.5*matSize, true);
+    // backClamp.set(true);
+    // backLift.set(1);
     mainLift.set(2);
-    delay(100);
+    // delay(100);
     moveTo(1.5*matSize, 4.5*matSize);
 
-    moveTo(1.5*matSize, 4*matSize, true);
+    rotateToPt(1.5*matSize, 4*matSize, true);
     lowLift.set(0);
     backClamp.set(false);
-    delay(200);
+    delay(800);
     goToGoal(goalAlliance);
     lowLift.set(1);
+    backLift.set(0);
     moveTo(2*matSize, 4*matSize, true);
     roller.moveVelocity(rollerVelocity);
+    delay(1000);
+    lowLift.set(0);
 
-    moveTo(2*matSize, 2*matSize, true, 0, 112);
+    moveTo(4*matSize, 2*matSize, true, 0, 200);
     delay(2000);
 }
 /*

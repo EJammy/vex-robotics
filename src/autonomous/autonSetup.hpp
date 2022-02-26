@@ -21,8 +21,8 @@ const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platf
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
 const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
 
-const double mxV1 = 120; // normal velocity
-const double mxV2 = 90; // velocity when grabbing goal
+const double mxV1 = 140; // normal velocity
+const double mxV2 = 100; // velocity when grabbing goal
 const double circumfrence = 4*PI;
 const int move_t_extra = 80;
 const int autonVelocity = 10;
@@ -52,12 +52,13 @@ void moveFwd(double dist, double velocity = mxV1, double targetAngle = NAN) {
     cout << "> done " << time * 12 << endl;
 }
 
-void rotateTo(double targetAngle, double diff = 0.20) {
+void rotateTo(double targetAngle, double diff = 0.25) {
+    if (abs(targetAngle - imu.get_rotation()) < diff*5) return;
     cout << "rotating" << endl;
-    PID tpid = PID(0.04, 0.0005, 0.0, 6, 0.2); // to do: tune pid
+    PID tpid = PID(0.042, 0.0007, 0.0, 6, 0.2); // to do: tune pid
     int t = 0;
     tpid.setTarget(targetAngle);
-    while (t < 8) {
+    while (t < 6) {
         tpid.update(imu.get_rotation());
         double force = clamp(tpid.getOutput(), 1);
 
@@ -73,7 +74,7 @@ void rotateTo(double targetAngle, double diff = 0.20) {
         else t = 0;
         pros::delay(4);
     }
-    pros::delay(20);
+    pros::delay(10);
 }
 
 void rotateToR(double d) {
@@ -112,6 +113,10 @@ void rotateToPt(double x, double y, bool rev = false) {
     // if (abs(theta - deg) > 2)
     rotateTo(theta); // math checks out
 }
+
+template<class T>
+int sg(T x) { return x < 0 ? -1:1; }
+
 void moveTo(double x, double y, bool rev = false, double delta = 0.0, double velocity = mxV1)
 {
     double dx = x-curX;
