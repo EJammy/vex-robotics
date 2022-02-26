@@ -21,8 +21,8 @@ const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platf
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
 const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
 
-const double mxV1 = 150; // normal velocity
-const double mxV2 = 100; // velocity when grabbing goal
+double mxV1 = 150; // normal velocity
+double mxV2 = 100; // velocity when grabbing goal
 const double circumfrence = 4*PI;
 const int move_t_extra = 80;
 const int autonVelocity = 10;
@@ -55,7 +55,7 @@ void moveFwd(double dist, double velocity = mxV1, double targetAngle = NAN) {
 void rotateTo(double targetAngle, double diff = 0.25) {
     if (abs(targetAngle - imu.get_rotation()) < diff*5) return;
     cout << "rotating" << endl;
-    PID tpid = PID(0.045, 0.001, 0.01, 6, 0.2); // to do: tune pid
+    PID tpid = PID(0.045, 0.0009, 0.01, 6, 0.2); // to do: tune pid
     int t = 0;
     tpid.setTarget(targetAngle);
     while (t < 6) {

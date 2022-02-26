@@ -1,9 +1,8 @@
-#include "autonomous/autonL.hpp"
-// #include "autonomous/autonRpush.hpp"
 #include "autonomous/autonZigZag.hpp"
 #include "autonomous/autonTest.hpp"
 #include "autonomous/skill.hpp"
 #include "autonomous/autonR.hpp"
+#include "autonomous/autonPlat.hpp"
 
 int autonSelection = -1;
 lv_res_t autonChooseFunc(lv_obj_t *btn) {
@@ -38,7 +37,9 @@ void autonomous() {
     // runAutonSkill();
     // delay(1000);
     // return;
-    // runZigZag();
+
+    mxV1 = 165;
+    runZigZag();
     // runAutonR();
 
     autonTest();
