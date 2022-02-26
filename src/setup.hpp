@@ -43,7 +43,7 @@ pros::Imu imu(8);
 
 const int liftVoltage = 4000;
 const int liftVelocity = 100;
-const int rollerVelocity = 200;
+const int rollerVelocity = 185;
 
 const int backLiftVelocity = 20;
 

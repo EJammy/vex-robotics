@@ -22,6 +22,7 @@ void disabled() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+    lowLift.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
     selectL.hide();
     selectR.hide();
     selectWP.hide();

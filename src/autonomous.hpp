@@ -1,6 +1,6 @@
 #include "autonomous/autonL.hpp"
 // #include "autonomous/autonRpush.hpp"
-// #include "autonomous/autonWP.hpp"
+#include "autonomous/autonZigZag.hpp"
 #include "autonomous/autonTest.hpp"
 #include "autonomous/skill.hpp"
 #include "autonomous/autonR.hpp"
@@ -38,9 +38,10 @@ void autonomous() {
     // runAutonSkill();
     // delay(1000);
     // return;
-    runAutonR();
+    // runZigZag();
+    // runAutonR();
 
-    // autonTest();
+    autonTest();
 
     return;
 

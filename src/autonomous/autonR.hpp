@@ -7,7 +7,7 @@ void runAutonR()
     * Robot pivot at center
     */
     // start from bottom right.
-    setState((matSize-5)*1, 4.5*matSize*1, 180);
+    setState((matSize-8)*1, 4.5*matSize*1, 180);
 
     // goToGoal(goalR, true);
     moveTo(4*matSize, 4.5*matSize, true);
@@ -26,10 +26,10 @@ void runAutonR()
     backLift.set(0);
     moveTo(2*matSize, 4*matSize, true);
     roller.moveVelocity(rollerVelocity);
-    delay(1000);
-    lowLift.set(0);
 
-    moveTo(4*matSize, 2*matSize, true, 0, 200);
+    moveTo(4.5*matSize, 1.5*matSize, true, 0, 200);
+    lowLift.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+    lowLift.moveVoltage(0);
     delay(2000);
 }
 /*
