@@ -77,10 +77,13 @@ void opcontrol() {
 		{
 			frontClamp.flip();
 		}
-		if (control.get_digital_new_press(DIGITAL_RIGHT))
+		static int cd = 0;
+		if (cd < 0 && control.get_digital_new_press(DIGITAL_RIGHT))
 		{
 			backClamp.flip();
+			cd = 20;
 		}
+		cd--;
 
 		// lift1.drive(true, false);
 

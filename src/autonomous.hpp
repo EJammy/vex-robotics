@@ -1,4 +1,4 @@
-// #include "autonomous/autonL.hpp"
+#include "autonomous/autonL.hpp"
 // #include "autonomous/autonRpush.hpp"
 // #include "autonomous/autonWP.hpp"
 #include "autonomous/autonTest.hpp"

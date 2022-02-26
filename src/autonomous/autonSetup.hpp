@@ -21,8 +21,8 @@ const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platf
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
 const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
 
-const double mxV1 = 150; // normal velocity
-const double mxV2 = 100; // velocity when grabbing goal
+const double mxV1 = 120; // normal velocity
+const double mxV2 = 90; // velocity when grabbing goal
 const double circumfrence = 4*PI;
 const int move_t_extra = 80;
 const int autonVelocity = 10;
@@ -44,6 +44,8 @@ void moveFwd(double dist, double velocity = mxV1, double targetAngle = NAN) {
     while (t < 12 && time < timeout / 12) {
         if (abs(left.getPositionError()) < posErr && abs(right.getPositionError()) < posErr) t++;
         else t = 0;
+        if (time % 20 == 0)
+            cout << "D: " << imu.get_rotation() << endl;
         time++;
         delay(12);
     }
@@ -95,15 +97,9 @@ void setState(double x, double y, double deg) {
     imu.set_rotation(deg);
 }
 
-void moveTo(double x, double y, bool rev = false, double delta = 0.0, double velocity = mxV1)
-{
+void rotateToPt(double x, double y, bool rev = false) {
     double dx = x-curX;
     double dy = y-curY;
-    curX = x;
-    curY = y;
-    if (dx * dx + dy * dy < minDistEpsilon * minDistEpsilon)
-        return;
-
     if (dy == 0) dy = 0.001;
     double theta = okapi::atan((dx / dy) * 1_in / 1_in).convert(1_deg);
 
@@ -115,11 +111,23 @@ void moveTo(double x, double y, bool rev = false, double delta = 0.0, double vel
 
     // if (abs(theta - deg) > 2)
     rotateTo(theta); // math checks out
+}
+void moveTo(double x, double y, bool rev = false, double delta = 0.0, double velocity = mxV1)
+{
+    double dx = x-curX;
+    double dy = y-curY;
+    double dist = sqrt(dx * dx + dy * dy);
+    if (dist - delta < minDistEpsilon)
+        return;
+    rotateToPt(x, y, rev);
+
+    curX = x - delta / dist * dx;
+    curY = y - delta / dist * dy;
 
     moveFwd((rev?-1:1)*(sqrt(dx*dx+dy*dy) - delta), velocity);
 }
 
-const int GDelta1 = 6;
+const int GDelta1 = 9;
 const int GDelta2 = 18;
 void goToGoal(Pos p, bool rev = false, double velocity = mxV2, double goalDelta1 = GDelta1)
 {
@@ -131,8 +139,8 @@ void goToGoal(Pos p, bool rev = false, double velocity = mxV2, double goalDelta1
 void goToGoalT(Pos p, bool rev = false, double dist1 = GDelta1, double dist2 = GDelta2, double v1 = mxV1, double v2 = mxV2) {
     double x = p.first;
     double y = p.second;
-    moveTo(x, y, rev, dist2, mxV1);
-    moveTo(x, y, rev, dist1, mxV2);
+    moveTo(x, y, rev, dist2, v1);
+    moveTo(x, y, rev, dist1, v2);
 }
 
 // void goToGoal2step(Pos p, bool rev = false)

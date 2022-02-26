@@ -2,7 +2,7 @@
 
 using std::abs; // important!! code uses abs(int) if not used
 
-struct PID{
+struct PID {
 	double error = INFINITY;
 	double target = 0;
 	double integral = 0;

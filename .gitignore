@@ -14,7 +14,3 @@ temp.log
 temp.errors
 *.ini
 .d/
-
-# save space
-include/
-firmware/
