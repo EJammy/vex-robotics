@@ -33,7 +33,7 @@ Lift mainLift(
 /* front low lift */
 Lift lowLift(
     okapi::Motor(5, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    {-555, -350, 0},
+    {-555, -440, 0},
     200,
     2
 );

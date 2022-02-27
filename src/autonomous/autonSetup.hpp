@@ -9,7 +9,6 @@ const double matSize = 23.42; // distance of a mat on field
 // 16.8/2 = 8.4
 const double robotSize = 16.8;
 const double rsHalf = robotSize/2;
-const double platformDiff = 12;
 
 using Pos = std::pair<double, double>;
 const Pos goalL = {3*matSize, 1.5*matSize};

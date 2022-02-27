@@ -38,8 +38,11 @@ void autonomous() {
     // delay(1000);
     // return;
 
-    mxV1 = 165;
-    runZigZag();
+    // mxV1 = 165;
+    // runZigZag();
+    mxV1 = 80;
+    mxV2 = 100;
+    autonPlat();
     // runAutonR();
 
     autonTest();

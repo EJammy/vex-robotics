@@ -6,17 +6,34 @@ void autonPlat()
     * Robot pivot at center
     */
     // start from bottom right.
-    setState((matSize-8)*1, 4.5*matSize*1, 0);
+    const double PDIFF = 6;
+    setState((matSize-8)*1, 4.5*matSize*1, 180);
 
-    // goToGoal(goalR, true);
-    moveTo(4*matSize, 4.5*matSize);
-    moveTo(4*matSize, 1.5*matSize);
-    moveTo(2*matSize, 1.5*matSize);
-    moveTo(2*matSize, 3*matSize);
-    goToGoal(goalM);
+    roller.moveVelocity(rollerVelocity);
+
+    goToGoal(goalR, true);
+    backClamp.set(true);
+    backLift.set(2);
     delay(200);
-    frontClamp.set(true);
-    mainLift.set(3);
-    moveTo(5 * matSize - 9, 3, false, 0, 100);
 
+    moveTo(4*matSize, 3*matSize, true);
+    moveTo(5*matSize - PDIFF, 3 * matSize, true);
+    backLift.move(1, -80);
+    delay(1000);
+    backClamp.set(false);
+    delay(200);
+    backLift.set(2);
+    delay(200);
+
+    moveTo(4*matSize, 3*matSize, false, 0, 70);
+    backLift.set(0);
+    goToGoal(goalL);
+    backClamp.set(true);
+    backLift.set(2);
+    delay(200);
+    return;
+
+    moveTo(2*matSize, 3*matSize, true);
+    moveTo(1*matSize + PDIFF, 3*matSize, true);
+    backClamp.set(false);
 }

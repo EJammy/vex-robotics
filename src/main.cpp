@@ -47,6 +47,14 @@ void opcontrol() {
 		} else {
 			roller.moveVoltage(0);
 		}
+		if (control.DOWN() && control.B()) {
+			left.moveVoltage(10000);
+			right.moveVoltage(10000);
+			mainLift.moveVoltage(6000);
+			backLift.moveVoltage(4000);
+			lowLift.moveVoltage(-9000);
+			delay(200);
+		}
 
 		left.moveVoltage((-control.L_Y() + control.R_X())*14000);
 		right.moveVoltage((-control.L_Y() - control.R_X())*14000);

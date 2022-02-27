@@ -4,11 +4,11 @@ using pros::delay;
 class Lift : public okapi::Motor
 {
     double liftVelocity;
-    const std::vector<double> pos;
     size_t cur;
     bool moving = false;
 
     public:
+        const std::vector<double> pos;
         Lift(okapi::Motor motor, std::initializer_list<double> positions, double velocity = 200, int initPos = 0) :
             okapi::Motor(motor), pos(positions), liftVelocity(velocity), cur(initPos)
         {
@@ -22,6 +22,9 @@ class Lift : public okapi::Motor
             cur = std::min(cur, pos.size()-1);
             moving = true;
             moveAbsolute(pos[cur], liftVelocity);
+        }
+        void move(int x, int delta) {
+            moveAbsolute(pos[x] + delta, liftVelocity);
         }
 
         void operator++(int) {
