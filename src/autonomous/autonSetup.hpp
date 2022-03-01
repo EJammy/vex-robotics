@@ -27,34 +27,48 @@ const int move_t_extra = 80;
 const int autonVelocity = 10;
 
 
-void moveFwd(double dist, double velocity = mxV1, double targetAngle = NAN) {
+double leftPos = 0;
+double rightPos = 0;
+double PERR = 10;
+void moveFwd(double dist, double velocity = mxV1, double posErr = PERR) {
     dist = dist/circumfrence*360;
-    left.moveRelative(dist, velocity);
-    right.moveRelative(dist, velocity);
+    leftPos += dist;
+    rightPos += dist;
+    left.moveAbsolute(leftPos, velocity);
+    right.moveAbsolute(rightPos, velocity);
     delay(100);
     int t = 0;
 
-    const int posErr = 5;
     int time = 0;
     double degPerSec = velocity / 60.0 * 360;
     int timeout = abs(dist/degPerSec*1000);
     timeout += 1000;
     cout << "moving " << timeout << endl;
-    while (t < 12 && time < timeout / 12) {
-        if (abs(left.getPositionError()) < posErr && abs(right.getPositionError()) < posErr) t++;
+    while (t < 4 && time < timeout / 12) {
+        if (abs(left.getPosition() - leftPos) < posErr && abs(right.getPosition() - rightPos) < posErr) t++;
         else t = 0;
-        if (time % 20 == 0)
+        if (time % 40 == 0) {
             cout << "D: " << imu.get_rotation() << endl;
+            cout << "-P: " << left.getPosition() << ' ' << left.getTargetPosition() << endl;
+            cout << "-1: " << left.getPositionError() << ' ' << leftPos << endl;
+            cout << endl;
+        }
         time++;
         delay(12);
     }
-    cout << "> done " << time * 12 << endl;
+    if (time < timeout / 12) {
+        cout << "> done ";
+        cout << "-P: " << left.getPosition() - leftPos << ' ' << right.getPosition() - rightPos << endl;
+    } else {
+        cout << "> bad ";
+        cout << "-P: " << left.getPosition() - leftPos << ' ' << right.getPosition() - rightPos << endl;
+    }
 }
 
-void rotateTo(double targetAngle, double diff = 0.25) {
+void rotateTo(double targetAngle, double diff = 0.35) {
     if (abs(targetAngle - imu.get_rotation()) < diff*5) return;
     cout << "rotating" << endl;
-    PID tpid = PID(0.045, 0.0009, 0.01, 6, 0.2); // to do: tune pid
+    PID tpid = PID(0.045, 0.00075, 0.01, 5, 0.3); // to do: tune pid
     int t = 0;
     tpid.setTarget(targetAngle);
     while (t < 6) {
@@ -74,6 +88,10 @@ void rotateTo(double targetAngle, double diff = 0.25) {
         pros::delay(4);
     }
     pros::delay(10);
+    leftPos = 0;
+    rightPos = 0;
+    left.tarePosition();
+    right.tarePosition();
 }
 
 void rotateToR(double d) {
@@ -116,7 +134,7 @@ void rotateToPt(double x, double y, bool rev = false) {
 template<class T>
 int sg(T x) { return x < 0 ? -1:1; }
 
-void moveTo(double x, double y, bool rev = false, double delta = 0.0, double velocity = mxV1)
+void moveTo(double x, double y, bool rev = false, double delta = 0.0, double velocity = mxV1, double posErr = PERR)
 {
     double dx = x-curX;
     double dy = y-curY;
@@ -128,11 +146,11 @@ void moveTo(double x, double y, bool rev = false, double delta = 0.0, double vel
     curX = x - delta / dist * dx;
     curY = y - delta / dist * dy;
 
-    moveFwd((rev?-1:1)*(sqrt(dx*dx+dy*dy) - delta), velocity);
+    moveFwd((rev?-1:1)*(sqrt(dx*dx+dy*dy) - delta), velocity, posErr);
 }
 
-const int GDelta1 = 9;
-const int GDelta2 = 18;
+const int GDelta1 = 6;
+const int GDelta2 = 9;
 void goToGoal(Pos p, bool rev = false, double velocity = mxV2, double goalDelta1 = GDelta1)
 {
     double x = p.first;
@@ -140,10 +158,10 @@ void goToGoal(Pos p, bool rev = false, double velocity = mxV2, double goalDelta1
     moveTo(x, y, rev, goalDelta1, mxV2);
 }
 
-void goToGoalT(Pos p, bool rev = false, double dist1 = GDelta1, double dist2 = GDelta2, double v1 = mxV1, double v2 = mxV2) {
+void goToGoalT(Pos p, bool rev = false, double dist1 = GDelta1, double dist2 = GDelta2, double v1 = mxV1, double v2 = 60) {
     double x = p.first;
     double y = p.second;
-    moveTo(x, y, rev, dist2, v1);
+    moveTo(x, y, rev, dist2, v1, 120);
     moveTo(x, y, rev, dist1, v2);
 }
 
