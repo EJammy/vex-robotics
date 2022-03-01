@@ -1,6 +1,6 @@
 #include "autonSetup.hpp"
 
-void runZigZag()
+void runThree()
 {
     /* (0,0) is bottom left corner
     * Robot pivot at center
@@ -10,8 +10,9 @@ void runZigZag()
 
     // goToGoal(goalR, true);
     moveTo(4*matSize, 4.5*matSize, true);
-    moveTo(2*matSize, 1.5*matSize, true);
+    moveTo(4*matSize, 3*matSize, true);
     moveTo(2*matSize, 3*matSize, true);
-    moveTo(4*matSize, 1.5*matSize, true, 0, 200);
+    moveTo(2*matSize, 1.5*matSize, true);
+    moveTo(4*matSize, 1.5*matSize, true);
 
 }

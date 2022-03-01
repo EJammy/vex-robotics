@@ -39,13 +39,13 @@ void autonomous() {
     // return;
 
     // mxV1 = 165;
-    // runZigZag();
-    mxV1 = 80;
-    mxV2 = 100;
-    autonPlat();
+    runZigZag();
+    // mxV1 = 140;
+    // mxV2 = 100;
+    // autonPlat();
     // runAutonR();
 
-    autonTest();
+    // autonTest();
 
     return;
 

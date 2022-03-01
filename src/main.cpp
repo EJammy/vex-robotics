@@ -42,12 +42,12 @@ void opcontrol() {
 		// chassis->getModel()->arcade(control.L_Y(), control.L_X()*0.7);
 		if (control.LEFT()) {
 			roller.moveVelocity(-rollerVelocity);
-		} else if (control.L_Y() > 0 || control.A()) {
+		} else if (lowLift.getPos() != 2 && control.L_Y() > 0 || control.A()) {
 			roller.moveVelocity(rollerVelocity);
 		} else {
 			roller.moveVoltage(0);
 		}
-		if (control.DOWN() && control.B()) {
+		if (false && control.DOWN() && control.B()) {
 			left.moveVoltage(10000);
 			right.moveVoltage(10000);
 			mainLift.moveVoltage(6000);
@@ -103,8 +103,9 @@ void opcontrol() {
 
 		// textField.setText(std::to_string(lift1.getPosition()));
 		textField.setText(
-			toStr(control.L1()) + " " + toStr(control.L2()) + " " + toStr(control.A()) + "\n"
-			+ toStr(imu.get_rotation())
+			toStr(control.L1()) + " " + toStr(control.L2()) + " " + toStr(control.A()) + "\n" +
+			toStr(imu.get_rotation()) + "\n" +
+			(control2.A() ? "Y" : "N")
 			);
 		// if (t % 100 == 0) {
 		// 	cout<<

@@ -7,6 +7,7 @@
 lvText textField(20, 20, lv_scr_act(), "Foo");
 
 ControllerWrapper control = ControllerWrapper(pros::E_CONTROLLER_MASTER);
+ControllerWrapper control2(pros::E_CONTROLLER_PARTNER);
 
 Clamp frontClamp('A');
 Clamp backClamp('B');
@@ -33,7 +34,7 @@ Lift mainLift(
 /* front low lift */
 Lift lowLift(
     okapi::Motor(5, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    {-555, -440, 0},
+    {-555, -420, 0},
     200,
     2
 );
@@ -43,7 +44,7 @@ pros::Imu imu(8);
 
 const int liftVoltage = 4000;
 const int liftVelocity = 100;
-const int rollerVelocity = 185;
+const int rollerVelocity = 120;
 
 const int backLiftVelocity = 20;
 

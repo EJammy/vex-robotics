@@ -7,10 +7,6 @@ void autonTest()
     // rotateTo(90);
     // return;
     setState(0, 0, 0);
-    moveTo(1 * matSize, 0);
-    rotateTo(180);
-    rotateTo(135);
-    return;
 
     bool doRev = 0;
     for (int i = 0; i < 1; i++) {
