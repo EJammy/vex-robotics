@@ -34,12 +34,12 @@ void autonomous() {
     /* (0,0) is bottom left corner
     * Robot pivot at center
     */
-    // runAutonSkill();
+    runAutonSkill();
     // delay(1000);
     // return;
 
     // mxV1 = 165;
-    runZigZag();
+    // runZigZag();
     // mxV1 = 140;
     // mxV2 = 100;
     // autonPlat();
