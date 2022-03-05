@@ -18,19 +18,19 @@ const Pos goalL = {3*matSize, 1.5*matSize};
 const Pos goalM = {3*matSize, 3*matSize};
 const Pos goalR = {3*matSize, 4.5*matSize};
 const Pos goalAlliance = {1.5*matSize, 5.5*matSize}; // the goal on awp
-const Pos goalAlliance2 = { matSize / 2, matSize * 1.75}; // the goal near platform
+const Pos goalAlliance2 = {matSize / 2 - 1, matSize * 1.75}; // the goal near platform
 
 const Pos goalEnemy = {4.5*matSize, 0.5*matSize};
-const Pos goalEnemy2 = {5.5*matSize, 4.25 * matSize };
+const Pos goalEnemy2 = {5.5*matSize + 1, 4.25 * matSize };
 
-double mxV1 = 100; // normal velocity
-double mxV2 = 50; // velocity when grabbing goal
+double mxV1 = 180; // normal velocity
+double mxV2 = 60; // velocity when grabbing goal
 const double circumfrence = 4*PI;
 const int move_t_extra = 80;
 
 double leftPos = 0;
 double rightPos = 0;
-double PERR = 3;
+double PERR = 2;
 
 double curX = 0;
 double curY = 0;
@@ -38,19 +38,23 @@ double curY = 0;
 std::pair<double, double> getPos() {
     // return {gps.get_status().y * 39.3701 + 3 * matSize, -gps.get_status().x * 39.3701 + 3 * matSize};
     auto g = gps.get_status();
-    return {-g.x * 39.3701 + 3*matSize, g.y * 39.3701 + 3 * matSize};
+    // return {-g.x * 39.3701 + 3*matSize, g.y * 39.3701 + 3 * matSize};
+    return {g.x * 39.3701 + 3*matSize, -g.y * 39.3701 + 3 * matSize};
 }
 
 void updPos() {
-    // double tx = 0;
-    // double ty = 0;
-    // for (int i = 0; i < 10; i++) {
-    //     auto [x, y] = getPos();
-    //     tx += x;
-    //     ty += y;
-    //     delay(20);
-    // }
-    std::tie(curX, curY) = getPos();
+    double tx = 0;
+    double ty = 0;
+    const int rep = 8;
+    delay(20);
+    for (int i = 0; i < rep; i++) {
+        auto [x, y] = getPos();
+        tx += x;
+        ty += y;
+        delay(12);
+    }
+
+    std::tie(curX, curY) = Pos{tx / rep, ty / rep};
 }
 
 void moveFwd(double dist, double velocity = mxV1, double posErr = PERR) {
@@ -66,7 +70,7 @@ void moveFwd(double dist, double velocity = mxV1, double posErr = PERR) {
     double degPerSec = velocity / 60.0 * 360;
     int timeout = abs(dist/degPerSec*1000);
     timeout += 1000;
-    cout << "moving " << timeout << endl;
+    cout << "moving " << leftPos << ' ' << rightPos << endl;
     while (t < 6 && time < timeout / 12) {
         if (abs(left.getPosition() - leftPos) < posErr && abs(right.getPosition() - rightPos) < posErr) t++;
         else t = 0;
@@ -88,10 +92,10 @@ void moveFwd(double dist, double velocity = mxV1, double posErr = PERR) {
     }
 }
 
-void rotateTo(double targetAngle, double diff = 0.2) {
+void rotateTo(double targetAngle, double diff = 0.25) {
     if (abs(targetAngle - imu.get_rotation()) < diff*5) return;
     cout << "rotating" << endl;
-    PID tpid = PID(0.045, 0.00075, 0.01, 5, 0.15); // to do: tune pid
+    PID tpid = PID(0.07, 0.0012, 0.6, 4, 0.2); // to do: tune pid
     int t = 0;
     tpid.setTarget(targetAngle);
     while (t < 8) {
@@ -108,14 +112,14 @@ void rotateTo(double targetAngle, double diff = 0.2) {
 
         if (abs(tpid.error) < diff) t++;
         else t = 0;
+
+        // if (abs(tpid.error) < diff * 2) cout << tpid.error << endl;
         pros::delay(4);
     }
     left.moveVoltage(0);
     right.moveVoltage(0);
-    leftPos = 0;
-    rightPos = 0;
-    left.tarePosition();
-    right.tarePosition();
+    leftPos = left.getPosition();
+    rightPos = right.getPosition();
 }
 
 void rotateToR(double d) {
@@ -181,7 +185,7 @@ void moveTo(double x, double y, bool rev = false, double delta = 0.0, double vel
     // else doNxtUpd = true;
 }
 
-const int GDelta1 = 9;
+const int GDelta1 = 5;
 const int GDelta2 = 12;
 void goToGoal(Pos p, bool rev = false, double velocity = mxV2, double goalDelta1 = GDelta1)
 {

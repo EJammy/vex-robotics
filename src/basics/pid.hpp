@@ -38,6 +38,8 @@ struct PID {
 		}else{
 			integral = 0;
 		}
+		if ( (error < 0 && lastError > 0) || (error > 0 && lastError < 0) )
+			integral = 0;
 		return getOutput();
 	}
 	double getOutput(){

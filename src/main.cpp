@@ -108,11 +108,11 @@ void opcontrol() {
 				toStr(getPos().first / matSize) + " " + toStr(getPos().second / matSize) + " " + toStr(gps.get_status().yaw) + "\n" +
 				toStr(imu.get_rotation()) + "\n"
 				);
-			cout << 
-			toStr(g.x) + " " + toStr(g.y) + " " + toStr(g.yaw) + "\n" +
-			toStr(getPos().first) + " " + toStr(getPos().second) + " " + toStr(gps.get_status().yaw) + "\n" +
-			toStr(getPos().first / matSize) + " " + toStr(getPos().second / matSize) + " " + toStr(gps.get_status().yaw) + "\n" +
-			toStr(imu.get_rotation()) << endl;
+			// cout << 
+			// toStr(g.x) + " " + toStr(g.y) + " " + toStr(g.yaw) + "\n" +
+			// toStr(getPos().first) + " " + toStr(getPos().second) + " " + toStr(gps.get_status().yaw) + "\n" +
+			// toStr(getPos().first / matSize) + " " + toStr(getPos().second / matSize) + " " + toStr(gps.get_status().yaw) + "\n" +
+			// toStr(imu.get_rotation()) << endl;
 		}
 
 		// if (t % 100 == 0) {

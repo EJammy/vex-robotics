@@ -1,5 +1,15 @@
 #include "autonSetup.hpp"
 
+
+void testRotate() {
+    rotateTo(90);
+    rotateTo(-90);
+    rotateTo(-45);
+    rotateTo(-60);
+    rotateTo(180);
+    delay(100);
+}
+
 void autonTest()
 {
     setState(matSize - 9, 1.5 *matSize, 0);

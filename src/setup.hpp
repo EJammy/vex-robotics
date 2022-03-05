@@ -23,12 +23,12 @@ okapi::MotorGroup left({
 /* back lift */
 Lift backLift(
     okapi::Motor(3, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    {0, 300, 990}
+    {0, 500, 960}
 );
 
 Lift mainLift(
     okapi::Motor(4, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    {0, 300, 960}
+    {0, 500, 950}
 );
 
 /* front low lift */
@@ -70,6 +70,8 @@ const double chassisGearRatio = 1;
  */
 void initialize() {
     using namespace okapi;
+
+    gps.set_data_rate(8);
 
     left.setBrakeMode(AbstractMotor::brakeMode::brake);
     right.setBrakeMode(AbstractMotor::brakeMode::brake);

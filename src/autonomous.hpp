@@ -1,6 +1,6 @@
 #include "autonomous/autonZigZag.hpp"
 #include "autonomous/autonTest.hpp"
-#include "autonomous/skill2.hpp"
+#include "autonomous/skill3.hpp"
 #include "autonomous/autonR.hpp"
 #include "autonomous/autonPlat.hpp"
 
@@ -34,6 +34,7 @@ void autonomous() {
     /* (0,0) is bottom left corner
     * Robot pivot at center
     */
+    // testRotate();
     runAutonSkill();
     // delay(1000);
     // return;
