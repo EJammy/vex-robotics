@@ -71,7 +71,7 @@ const double chassisGearRatio = 1;
 void initialize() {
     using namespace okapi;
 
-    gps.set_data_rate(8);
+    gps.set_data_rate(15);
 
     left.setBrakeMode(AbstractMotor::brakeMode::brake);
     right.setBrakeMode(AbstractMotor::brakeMode::brake);

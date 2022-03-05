@@ -2,12 +2,13 @@
 
 void liftSequence(bool side, bool dir, double diff = 0) {
     double Vel1 = 90;
-    double Vel2 = 120;
+    double Vel2 = 90;
     Lift &lift = (dir? backLift : mainLift);
+    double delta = (dir ? 6: 3);
     if (side) {
-        moveTo(5*matSize - 5, 3 * matSize + diff, dir, 0, Vel1);
+        moveTo(5*matSize - delta, 3 * matSize + diff, dir, 0, Vel1);
     }else {
-        moveTo(1*matSize + 5, 3 * matSize + diff, dir, 0, Vel1);
+        moveTo(1*matSize + delta, 3 * matSize + diff, dir, 0, Vel1);
     }
     lift.set(1);
     delay(1200);
@@ -23,7 +24,7 @@ void liftSequence(bool side, bool dir, double diff = 0) {
         moveTo(4.2*matSize, 3*matSize, !dir, 0, Vel2);
     }else {
         moveTo(1.8*matSize, 3*matSize, !dir, 0, Vel2);
-    }updPos();
+    }
     lift.set(0);
 }
 
@@ -34,22 +35,25 @@ void runAutonSkill()
     setState(90);
     roller.moveVelocity(rollerVelocity);
 
-    goToGoal(goalAlliance2, false, mxV2, 11); updPos();
+    goToGoal(goalAlliance2, false, mxV2, 11);
     frontClamp.set(true);
     mainLift.set(2);
-    delay(2000);
+    updPos();
+    delay(1200);
 
     moveTo(1.5 * matSize, 1.4 * matSize, true); updPos();
-    goToGoal(goalL, true);
+    goToGoal(goalL + Pos{0, -0.2}, true);
     backClamp.set(true);
     backLift.set(2);
-    delay(500);
+    updPos();
 
-    moveTo(4.4*matSize, 3*matSize, true); updPos();
-    liftSequence(true, true);
+    moveTo(4.2*matSize, 3*matSize, true, 2); updPos();
+    liftSequence(true, true, -1);
+    updPos();
     liftSequence(true, false);
-
-    delay(800);
+    updPos();
+    backLift.set(0);
+    mainLift.set(0);
 
     //
 
@@ -59,21 +63,25 @@ void runAutonSkill()
     backLift.set(2);
 
     moveTo(4 * matSize, 2 * matSize); updPos();
-    goToGoal(goalM); updPos();
+    moveTo(matSize, 5 * matSize);
+    updPos();
+    moveTo(matSize*2, matSize * 3);
+    updPos();
+
+    // liftSequence(false, false);
+    // updPos();
+    liftSequence(false, true);
+    updPos();
+
+    moveTo(1.5 * matSize, 4.5 * matSize); updPos();
+    goToGoal(goalAlliance);
     frontClamp.set(true);
     mainLift.set(2);
-    delay(200);
-
-    liftSequence(false, false);
-    liftSequence(false, true);
-    delay(800);
-
-    goToGoal(goalAlliance);
-    frontClamp.set(0);
-    mainLift.set(2);
+    moveTo(2 * matSize, 4.5 * matSize, true); updPos();
     goToGoal(goalR, true);
+    updPos();
     backClamp.set(true);
     backLift.set(2);
     liftSequence(true, true, -5);
-    liftSequence(true, false, 5);
+    // liftSequence(true, false, 5);
 }
