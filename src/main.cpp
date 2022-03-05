@@ -98,15 +98,23 @@ void opcontrol() {
 
 //		cout<<control.R1()<<' '<<control.R2()<<'\n';
 
-		textField.setText(std::to_string(control.R1()));
-
 
 		// textField.setText(std::to_string(lift1.getPosition()));
-		textField.setText(
-			toStr(control.L1()) + " " + toStr(control.L2()) + " " + toStr(control.A()) + "\n" +
-			toStr(imu.get_rotation()) + "\n" +
-			(control2.A() ? "Y" : "N")
-			);
+		if (t % 200 == 0) {
+			auto g = gps.get_status();
+			textField.setText(
+				toStr(g.x) + " " + toStr(g.y) + " " + toStr(g.yaw) + "\n" +
+				toStr(getPos().first) + " " + toStr(getPos().second) + " " + toStr(gps.get_status().yaw) + "\n" +
+				toStr(getPos().first / matSize) + " " + toStr(getPos().second / matSize) + " " + toStr(gps.get_status().yaw) + "\n" +
+				toStr(imu.get_rotation()) + "\n"
+				);
+			cout << 
+			toStr(g.x) + " " + toStr(g.y) + " " + toStr(g.yaw) + "\n" +
+			toStr(getPos().first) + " " + toStr(getPos().second) + " " + toStr(gps.get_status().yaw) + "\n" +
+			toStr(getPos().first / matSize) + " " + toStr(getPos().second / matSize) + " " + toStr(gps.get_status().yaw) + "\n" +
+			toStr(imu.get_rotation()) << endl;
+		}
+
 		// if (t % 100 == 0) {
 		// 	cout<<
 		// 		toStr(chassis->getOdometry()->getState().x.convert(1_in)) + " " +

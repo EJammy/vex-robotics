@@ -1,6 +1,6 @@
 #include "autonomous/autonZigZag.hpp"
 #include "autonomous/autonTest.hpp"
-#include "autonomous/skill.hpp"
+#include "autonomous/skill2.hpp"
 #include "autonomous/autonR.hpp"
 #include "autonomous/autonPlat.hpp"
 

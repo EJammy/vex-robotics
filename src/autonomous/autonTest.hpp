@@ -2,6 +2,10 @@
 
 void autonTest()
 {
+    setState(matSize - 9, 1.5 *matSize, 0);
+    updPos();
+    moveTo(3*matSize, 5 * matSize);
+    return;
     // setState((matSize-10)*1, 4.5*matSize*1, 180);
     // moveTo(1.5 * matSize, 4.5*matSize, true);
     // rotateTo(90);

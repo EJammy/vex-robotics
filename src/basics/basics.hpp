@@ -32,7 +32,7 @@ double lerp(double xmin, double xmax, double ymin, double ymax, double x) {
 	return ymin + (x - xmin) * (ymax - ymin) / (xmax - xmin);
 }
 
-std::string toStr(double a, int precision = 5){
+std::string toStr(double a, int precision = 3){
 	std::ostringstream oss;
 	oss.precision(precision);
 	oss<<a;
@@ -50,4 +50,5 @@ double inchToDeg(double x){
 double degToInch(double deg){
 	return deg * 3.25*PI / 360.0;
 }
+
 #endif //_BASICS_HPP

@@ -34,17 +34,18 @@ Lift mainLift(
 /* front low lift */
 Lift lowLift(
     okapi::Motor(5, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees),
-    {-555, -420, 0},
+    {-555, -374, 0},
     200,
     2
 );
 
 okapi::Motor roller(7, true, okapi::AbstractMotor::gearset::green, okapi::AbstractMotor::encoderUnits::degrees);
 pros::Imu imu(8);
+pros::Gps gps(6, 0.11, 0.13);
 
 const int liftVoltage = 4000;
 const int liftVelocity = 100;
-const int rollerVelocity = 120;
+const int rollerVelocity = 190;
 
 const int backLiftVelocity = 20;
 
