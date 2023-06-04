@@ -96,9 +96,6 @@ void opcontrol() {
 
 		// lift1.drive(true, false);
 
-//		cout<<control.R1()<<' '<<control.R2()<<'\n';
-
-
 		// textField.setText(std::to_string(lift1.getPosition()));
 		if (t % 200 == 0) {
 			auto g = gps.get_status();
