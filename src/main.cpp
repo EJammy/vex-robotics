@@ -1,6 +1,20 @@
 #include "autonomous.hpp"
 
 /**
+ * \mainpage
+ *
+ * # FOO
+ * ## Bar
+ * Baz
+ * \ref starting
+ * \ref starting "yo yo yo"
+ * [getting started](docs/hello-world.md)
+ * [getting started](starting)
+ * [getting started](starting#Basic)
+ *
+ */
+
+/**
  * Runs while the robot is in the disabled state of Field Management System or
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
